@@ -42,13 +42,13 @@
 				</tr>
 
 				<?php
-				$myproj = "select description, curramount, goalamount from initiator natural join project where email=$1";
+				$myproj = "select description, curramount, goalamount, projid from initiator natural join project where email=$1";
 				pg_prepare($dbconn, "myproj", $myproj);
 				$result = pg_execute($dbconn, "myproj", array($uname));
 				while($row = pg_fetch_row($result))
 				{
 					echo "<tr>
-							<td>$row[0]</td>
+							<td><a href=\"projhistory.php?p=$row[3]\">$row[0]</a></td>
 							<td>\$$row[1]</td>
 							<td>\$$row[2]</td>
 						</tr>";
