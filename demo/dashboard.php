@@ -24,6 +24,16 @@
 				pg_prepare($dbconn, "getname", $getname);
 				$result = pg_execute($dbconn, "getname", array($uname));
 				$row = pg_fetch_row($result);
+
+				echo"
+					<form action=\"profile.php\" method=\"POST\">
+						<input type=\"hidden\" name=\"user\" value=\"$uname\">
+						<input type=\"hidden\" name=\"fname\" value=\"$row[0]\">
+						<input type=\"hidden\" name=\"lname\" value=\"$row[1]\">
+						<input type=\"submit\" value=\"My Profile\">
+					</form>
+					";
+
 				echo "<h1>$row[0] $row[1]'s projects</h1>";
 				echo "<table>";
 				echo "<tr>
