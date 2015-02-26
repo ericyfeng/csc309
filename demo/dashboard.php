@@ -60,7 +60,7 @@
 
 				while($row = pg_fetch_row($result))
 				{?>
-					<a href="overview.php?p=<?php echo $row[0]?>&user=<?php echo $uname?>"> <?php echo $row[1]?></a>
+					<a href="overview.php?p=<?php echo $row[0]?>&user=<?php echo $uname?>"> <?php echo $row[1]?></a><br>
 				<?php
 				}
 				?>
