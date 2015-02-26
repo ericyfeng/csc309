@@ -24,16 +24,12 @@
 				$result = pg_execute($dbconn, "getname", array($uname));
 				$row = pg_fetch_row($result);
 			?>
-				<!--It's a quirky method by using a form with all hidden elements but it works-->
-				<form action="profile.php" method="POST">
-					<input type="hidden" name="user" value="$uname">
-					<input type="hidden" name="fname" value="$row[0]">
-					<input type="hidden" name="lname" value="$row[1]">
-					<input type="submit" value="My Profile">
-				</form>
+				<h1>Welcome <?php echo "$row[0] $row[1]"?> to Crowd Funder</h1>
 
+				<button onclick="location.href='profile.php?fname=<?php echo $row[0]?>&lname=<?php echo $row[1]?>&user=<?php echo $uname?>'">My Profile</button>
+				<button onclick="location.href='newproject.php?user=<?php echo $uname?>'">*New Project</button>
 
-				<h1> <?php echo "$row[0] $row[1]"?>'s projects</h1>
+				<h3>My Projects</h3>
 				<table>
 				<tr>
 					<td>Description</td>

@@ -17,6 +17,7 @@
 			pg_prepare($dbconn, "syncdb", $syncdb);
 			$result = pg_execute($dbconn, "syncdb", array($newamount, $projid));
 
+			date_default_timezone_set("EST");
 			$logdonation = "insert into funder (email, projid, datestamp, amount) values ($1, $2, $3, $4)";
 			pg_prepare($dbconn, "logdonation", $logdonation);
 			pg_execute($dbconn, "logdonation", array($userid, $projid, date("Y-m-d"), $amount));

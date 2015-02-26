@@ -26,9 +26,9 @@
 		<?php
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
-			$fname = $_POST["fname"];
-			$lname = $_POST["lname"];
-			$email = $_POST["user"];
+			$fname = $_GET["fname"];
+			$lname = $_GET["lname"];
+			$email = $_GET["user"];
 			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 			$myinterest = "select description from personalinterests natural join interests where email=$1";
 			pg_prepare($dbconn, "myinterest", $myinterest);
