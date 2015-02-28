@@ -54,7 +54,7 @@
 				<h3>Other Projects</h3>
 
 				<?php
-				$others = "select projid, description from initiator natural join project where email !=$1";
+				$others = "select distinct projid, description from initiator natural join project where (projid) not in (select projid from initiator where email=$1)";
 				pg_prepare($dbconn, "others", $others);
 				$result = pg_execute($dbconn, "others", array($uname));
 

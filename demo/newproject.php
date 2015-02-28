@@ -126,6 +126,7 @@
 			<input type="hidden" name="user" value="<?php echo $_GET['user']?>"></input>
 		</form>
 		<p id="warning" style="color:red;font-size:70%"></p>
+
 		<?php
 			$user = $_GET["user"];
 			$goalamount = $_POST["goalamount"];

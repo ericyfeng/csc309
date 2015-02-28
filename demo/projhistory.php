@@ -2,6 +2,20 @@
 <html>
 	<head>
 		<title>Simple History</title>
+		<script>
+			function addinit(id)
+			{
+				var email = document.getElementById("newinit").value;
+				var ajax = new XMLHttpRequest();
+				ajax.onreadystatechange = function ()
+				{
+					document.getElementById("status").innerHTML=ajax.responseText;
+				}
+				ajax.open("POST", "addinit.php", true);
+				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				ajax.send("id="+id+"&email="+email);
+			}
+		</script>
 	</head>
 	
 	<body>
@@ -23,7 +37,12 @@
 			<li><b>Location:</b> <?php echo "$row[6]"?></li>
 			<li><b>Current Fudning:</b> <?php echo "$row[2]"?></span></li>
 			<li><b>Target Fuding:</b> $<?php echo "$row[1]"?></li>
-		</ul>		
+		</ul>
+
+		<h3>Add Project Owner</h3>
+			<input type="text" id="newinit"></input>
+			<input type="button" onclick="addinit('<?php echo $id?>')" value="+">
+			<p id="status" style="color:blue;font-size:70%"></p>
 		<h3>Donation History</h3>
 		<table>
 			<tr>
