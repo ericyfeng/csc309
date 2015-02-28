@@ -29,6 +29,8 @@
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
 		$row = pg_fetch_row($result);
+		if($row[8]==0) $rating="No ratings yet";
+		else $rating=$row[8];
 	?>
 		<h3> <?php echo "$row[5]"?> </h3>
 		<ul>
@@ -37,6 +39,7 @@
 			<li><b>Location:</b> <?php echo "$row[6]"?></li>
 			<li><b>Current Fudning:</b> <?php echo "$row[2]"?></span></li>
 			<li><b>Target Fuding:</b> $<?php echo "$row[1]"?></li>
+			<li><b>Community Rating:</b> <?php echo "$rating"?></li>
 		</ul>
 
 		<h3>Add Project Owner</h3>
