@@ -6,13 +6,35 @@
 			function validate() //get it: valid date
 			{
 				var month = document.getElementById("month").value;
-
 				var day = document.getElementById("day").value;
-
 				var year = document.getElementById("year").value;
-
+				var todayyear = new Date().getFullYear();
+				var todaymonth = new Date().getMonth()+1;
+				var todayday = new Date().getDate();
 				
-				if(month=="April" || month=="June" || month=="September" || month=="November")
+				if(year == todayyear)
+				{
+					if(month < todaymonth)
+					{
+						document.getElementById("warning").innerHTML="Project can't end before it starts";
+						return false;
+					}
+					if(month == todaymonth)
+					{
+						if(day < todayday)
+						{
+							document.getElementById("warning").innerHTML="Project can't end before it starts";
+							return false;
+						}
+						else if (day == todayday)
+						{
+							document.getElementById("warning").innerHTML="Project should last at least a day";
+							return false;
+						}
+					}
+				}
+				
+				if(month==4 || month==6 || month==9 || month==11)
 				{
 					if(day == 31) 
 					{	
@@ -20,7 +42,7 @@
 						return false;
 					}
 				}
-				if(month=="February")
+				if(month==2)
 				{
 					if((year%4 == 0) && (day > 29))
 					{
@@ -103,7 +125,7 @@
 			</table>
 			<input type="hidden" name="user" value="<?php echo $_GET['user']?>"></input>
 		</form>
-		<p id="warning" style="color:red;font-size:70%">hi</p>
+		<p id="warning" style="color:red;font-size:70%"></p>
 		<?php
 			$user = $_GET["user"];
 			$goalamount = $_POST["goalamount"];
