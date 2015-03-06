@@ -9,6 +9,7 @@ drop table if exists community cascade;
 drop table if exists communityendorsement cascade;
 drop table if exists initiator cascade;
 drop table if exists funder cascade;
+drop table if exists rating cascade;
 
 ----------------------------------------------------------------------
 -------------admin table--------------------------------------------
@@ -62,7 +63,7 @@ CREATE TABLE project
     description character varying(100),
     location character varying(40) NOT NULL,
     popularity integer NOT NULL,
-    rating integer NOT NULL
+    rating double precision NOT NULL
 );
 CREATE SEQUENCE project_projid_seq
     START WITH 1
@@ -146,6 +147,30 @@ ALTER TABLE ONLY funder
 ALTER TABLE ONLY funder
     ADD CONSTRAINT funder_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
 
+----------------------------------------------------------------------
+-------------ratings table--------------------------------------------
+----------------------------------------------------------------------
+CREATE TABLE rating (
+    rid integer NOT NULL,
+    projid integer NOT NULL,
+    email character varying(40),
+	rating integer NOT NULL
+);
+CREATE SEQUENCE rating_rid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY rating ALTER COLUMN rid SET DEFAULT nextval('rating_rid_seq'::regclass);
+SELECT pg_catalog.setval('rating_rid_seq', 2, false);
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_pkey PRIMARY KEY (rid);
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+
 -----------------------------------------------------------------
 -----------------------sample data info--------------------------
 --* 3 Main users at the top
@@ -204,4 +229,8 @@ COPY funder (fundid, email, projid, datestamp, amount) FROM stdin;
 2	creepo@raildex.tv	1	2015-2-22	15
 3	whitehat@raildex.tv	2	2015-2-25	20
 4	legends@raildex.tv	2	2015-3-1	980
+\.
+
+COPY rating (rid, projid, email, rating) FROM stdin;
+1	2	whitehat@raildex.tv	5
 \.
