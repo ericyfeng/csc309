@@ -85,7 +85,7 @@
 						$goalamount=$row[2];
 						$projid=$row[3];
 						echo "<tr>
-								<td><a href=\"projhistory.php?p=$projid\">$description</a></td>
+								<td><a href=\"projhistory.php?p=$projid&email=$uname\">$description</a></td>
 								<td>\$$curramount</td>
 								<td>\$$goalamount</td>
 							</tr>";
