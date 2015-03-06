@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
 		<title>Simple Project Creation</title>
 		<script>
 			function validate() //get it: valid date
@@ -66,6 +75,28 @@
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 		?>
+
+		<!--Black nav bar-->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<div class="navbar-brand"><?php echo $fname?> <?php echo $lname?>'s Scrap Funder</div>
+					</div>
+
+					<div class="navbar-nav navbar-right">
+
+						<!--My profile button-->
+						<a href="profile.php?fname=<?php echo $fname?>&lname=<?php echo $lname?>&user=<?php echo $uname?>" class="navbar-btn btn btn-primary"">
+							<span class="glyphicon glyphicon-user"></span> My Profile
+						</a>
+							
+						<!--Fakeish log out button-->
+						<a href="index.html" class="navbar-btn btn btn-primary"">
+							<span class="glyphicon glyphicon-off"></span> Log Out
+						</a>
+						</div>
+					</div>
+				</nav>
 
 		<h1>Create a New Project</h1>
 		<form action="newproject.php" onsubmit="return validate()" method="POST">

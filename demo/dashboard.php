@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+	session_start();
+?>
+
 <html>
 	<head>
 
@@ -16,25 +20,37 @@
 
 	<body>
 		<?php
+			//enable php debugging
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
-
+			date_default_timezone_set('America/Toronto');
 			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
-			$uname = $_POST["email"];
-			$passwd = $_POST["passwd"];
-			$verify = "select count(*) from users where email=$1 and password=$2";
-			pg_prepare($dbconn, "preparelogin", $verify);
-			$result = pg_execute($dbconn, "preparelogin", array($uname, $passwd));
+			//check if session id is real or faked
+			$sessid = $_GET["sessid"];
+			$validnum = "select count(*) from session where sessionid=$1";
+			pg_prepare($dbconn, "validnum", $validnum);
+			$result = pg_execute($dbconn, "validnum", array($sessid));
 			$row = pg_fetch_row($result);
-			if($row[0])
+			if($row[0] == 0)
 			{
-				$getname = "select fname, lname from users where email=$1";
-				pg_prepare($dbconn, "getname", $getname);
-				$result = pg_execute($dbconn, "getname", array($uname));
-				$row = pg_fetch_row($result);
-				$fname=$row[0];
-				$lname=$row[1];
+				echo "Please login again"; //do not give hints about the failed login
+				exit();
+			}
+
+			//check if the valid session id # is expired or not
+			$expiry = "select expiration from session where sessionid=$1";
+			pg_prepare($dbconn, "expiry", $expiry);
+			$result = pg_execute($dbconn, "expiry", array($sessid));
+			$row = pg_fetch_row($result);
+			$dbdate = new DateTime($row[0]);
+			
+			if($dbdate > new DateTime())
+			{
+				//the session has not expired yet, get the user variables for printing
+				$fname = $_SESSION["fname"];
+				$lname = $_SESSION["lname"];
+				$email = $_SESSION["email"];
 			?>
 
 				<!--Black nav bar-->
@@ -46,22 +62,23 @@
 
 						<div class="navbar-nav navbar-right">
 							<!--New project button-->
-							<a href="newproject.php?user=<?php echo $uname?>" class="navbar-btn btn btn-success"">
+							<a href="newproject.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-success"">
 								<span class="glyphicon glyphicon-asterisk"></span> New Project
 							</a>
 							<!--My profile button-->
-							<a href="profile.php?fname=<?php echo $fname?>&lname=<?php echo $lname?>&user=<?php echo $uname?>" class="navbar-btn btn btn-primary"">
+							<a href="profile.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary"">
 								<span class="glyphicon glyphicon-user"></span> My Profile
 							</a>
 							
-							<!--Fakeish log out button-->
-							<a href="index.html" class="navbar-btn btn btn-primary"">
+							<!--Real deal log out button-->
+							<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary"">
 								<span class="glyphicon glyphicon-off"></span> Log Out
 							</a>
 						</div>
 					</div>
 				</nav>
 				
+				<!--Guts of the webpage-->
 				<div class="container-fluid">
 					<h3>My Projects</h3>
 					<table class="table table-striped">
@@ -77,7 +94,9 @@
 					<?php
 					$myproj = "select description, curramount, goalamount, projid from initiator natural join project where email=$1";
 					pg_prepare($dbconn, "myproj", $myproj);
-					$result = pg_execute($dbconn, "myproj", array($uname));
+					$result = pg_execute($dbconn, "myproj", array($email));
+
+					//create a new table entry for each of the user's projects
 					while($row = pg_fetch_row($result))
 					{
 						$description=$row[0];
@@ -85,13 +104,14 @@
 						$goalamount=$row[2];
 						$projid=$row[3];
 						echo "<tr>
-								<td><a href=\"projhistory.php?p=$projid&email=$uname\">$description</a></td>
+								<td><a href=\"projhistory.php?p=$projid&sessid=$sessid\">$description</a></td>
 								<td>\$$curramount</td>
 								<td>\$$goalamount</td>
 							</tr>";
 					}?>
-					</table>
-			
+
+
+					</table>			
 					<h3>Other Projects</h3>
 					<table class="table table-striped">
 						<thead>
@@ -104,12 +124,12 @@
 					<?php
 					$others = "select distinct projid, description, enddate, location from initiator natural join project where (projid) not in (select projid from initiator where email=$1)";
 					pg_prepare($dbconn, "others", $others);
-					$result = pg_execute($dbconn, "others", array($uname));
+					$result = pg_execute($dbconn, "others", array($email));
 
 					while($row = pg_fetch_row($result))
 					{?>
 						<tr>
-							<td><a href="overview.php?p=<?php echo $row[0]?>&user=<?php echo $uname?>"> <?php echo $row[1]?></a><br></td>
+							<td><a href="overview.php?p=<?php echo $row[0]?>&sessid=<?php echo $sessid?>"> <?php echo $row[1]?></a><br></td>
 							<td><?php echo $row[2]?></td>
 							<td><?php echo $row[3]?></td>
 						</tr>
@@ -122,9 +142,9 @@
 			}
 			else
 			{
-				echo "invalid credentials";
+				echo "Please log in again."; //give no clues as to why the login failed
 			}
-		?>
+			?>
 
 	</body>
 </html>

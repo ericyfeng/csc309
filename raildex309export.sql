@@ -10,7 +10,7 @@ drop table if exists communityendorsement cascade;
 drop table if exists initiator cascade;
 drop table if exists funder cascade;
 drop table if exists rating cascade;
-
+drop table if exists session cascade;
 ----------------------------------------------------------------------
 -------------admin table--------------------------------------------
 ----------------------------------------------------------------------
@@ -171,6 +171,19 @@ ALTER TABLE ONLY rating
 ALTER TABLE ONLY rating
     ADD CONSTRAINT rating_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
 
+----------------------------------------------------------------------
+-------------session information table--------------------------------
+----------------------------------------------------------------------
+CREATE TABLE session (
+    email character varying(40) NOT NULL,
+    sessionid integer,
+    expiration timestamp without time zone
+);
+ALTER TABLE ONLY session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (email);
+ALTER TABLE ONLY session
+    ADD CONSTRAINT session_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
 -----------------------------------------------------------------
 -----------------------sample data info--------------------------
 --* 3 Main users at the top
@@ -233,4 +246,13 @@ COPY funder (fundid, email, projid, datestamp, amount) FROM stdin;
 
 COPY rating (rid, projid, email, rating) FROM stdin;
 1	2	whitehat@raildex.tv	5
+\.
+
+COPY session (email, expiration) FROM stdin;
+right_hand@raildex.tv	2020-03-06 19:03:17.433082-05
+libprohibited@raildex.tv	2000-03-06 19:03:17.433082-05
+zapper@raildex.tv	2000-03-06 19:03:17.433082-05
+creepo@raildex.tv	2000-03-06 19:03:17.433082-05
+whitehat@raildex.tv	2000-03-06 19:03:17.433082-05
+legends@raildex.tv	2000-03-06 19:03:17.433082-05
 \.

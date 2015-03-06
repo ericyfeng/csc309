@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+	session_start();
+?>
+
 <html>
 	<head>
 		<!-- Latest compiled and minified CSS -->
@@ -32,11 +36,52 @@
 	<?php
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
-		
+		date_default_timezone_set('America/Toronto');
+
+		//establish all varibles received from GET and session information
 		$id = $_GET["p"];
-		$email = $_GET["email"];
+		$sessid = $_GET["sessid"];
+		$fname = $_SESSION["fname"];
+		$lname = $_SESSION["lname"];
+		$email= $_SESSION["email"];
 		$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
+		//check if session id is real or faked
+		$validnum = "select count(*) from session where sessionid=$1";
+		pg_prepare($dbconn, "validnum", $validnum);
+		$result = pg_execute($dbconn, "validnum", array($sessid));
+		$row = pg_fetch_row($result);
+		if($row[0] == 0)
+		{
+			echo "Please login again"; //do not give hints about the failed login
+			exit();
+		}
+
+		//check if the valid session id # is expired or not
+		$expiry = "select expiration from session where sessionid=$1";
+		pg_prepare($dbconn, "expiry", $expiry);
+		$result = pg_execute($dbconn, "expiry", array($sessid));
+		$row = pg_fetch_row($result);
+		$dbdate = new DateTime($row[0]);
+		if($dbdate < new DateTime())
+		{
+			echo "Please login again";
+			exit();
+		}
+
+		//with a valid unexpired session id#, now check if the user is an initiator of the project or not
+		$isinit = "select count(*) from initiator where projid=$1 and email=$2";
+		pg_prepare($dbconn, "isinit", $isinit);
+		$result = pg_execute($dbconn, "isinit", array($id, $email));
+		$row = pg_fetch_row($result);
+		if($row[0] != 1)
+		{
+			echo "You are not an initiator of this project";
+			exit();
+		}
+
+		//FINALL the session id is real, it isn't expired, and this person is an initiator of the project
+		//	let's get on with the show
 		$name = "select fname, lname from users where email=$1";
 		pg_prepare($dbconn, "name", $name);
 		$result = pg_execute($dbconn, "name", array($email));
@@ -71,8 +116,8 @@
 							<span class="glyphicon glyphicon-user"></span> My Profile
 						</a>
 							
-						<!--Fakeish log out button-->
-						<a href="index.html" class="navbar-btn btn btn-primary"">
+						<!--Real functioning log out button-->
+						<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary"">
 							<span class="glyphicon glyphicon-off"></span> Log Out
 						</a>
 						</div>

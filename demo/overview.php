@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+	session_start();
+?>
+
 <html>
 	<head>
 		<!-- Latest compiled and minified CSS -->
@@ -11,21 +15,21 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script>
-			function donate(userid, projid)
+			function donate(sessid, projid)
 			{
 				document.getElementById("antiocd").innerHTML="**to prevent OCD donations, the donation button has been disabled."
 				document.getElementById("donate").disabled = true;
 				var newAmount = new XMLHttpRequest();
 				newAmount.onreadystatechange= function ()
 				{
-					document.getElementById("current").innerHTML=newAmount.responseText;
+					document.getElementById("current").innerHTML="$"+newAmount.responseText;
 				}
 				newAmount.open("POST", "addmoney.php", true);
 				newAmount.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				newAmount.send("userid="+userid+"&projid="+projid+"&amount="+document.getElementById("donation").value);
+				newAmount.send("sessid="+sessid+"&projid="+projid+"&amount="+document.getElementById("donation").value);
 			}
 
-			function rate(projid, userid)
+			function rate(sessid, projid)
 			{
 				var ratingGroup = document.getElementsByName("rating");
 				var rating;
@@ -44,7 +48,7 @@
 				}
 				ajax.open("POST", "addrating.php", true);
 				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				ajax.send("userid="+userid+"&projid="+projid+"&rating="+rating);
+				ajax.send("sessid="+sessid+"&projid="+projid+"&rating="+rating);
 			}
 		</script>
 		<title>Simple Project Overview</title>
@@ -54,18 +58,41 @@
 	<?php
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
+		date_default_timezone_set('America/Toronto');
 
 		$id = $_GET["p"];
-		$uname = $_GET["user"];
+		$sessid = $_GET["sessid"];
+		$email = $_SESSION["email"];
+		$fname = $_SESSION["fname"];
+		$lname = $_SESSION["lname"];
+
 		$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
-		$name = "select fname, lname from users where email=$1";
-		pg_prepare($dbconn, "name", $name);
-		$result = pg_execute($dbconn, "name", array($uname));
+		//check if session id is real or faked
+		$validnum = "select count(*) from session where sessionid=$1";
+		pg_prepare($dbconn, "validnum", $validnum);
+		$result = pg_execute($dbconn, "validnum", array($sessid));
 		$row = pg_fetch_row($result);
-		$fname = $row[0];
-		$lname = $row[1];
+		if($row[0] == 0)
+		{
+			echo "Please login again"; //do not give hints about the failed login
+			exit();
+		}
 
+		//check if the valid session id # is expired or not
+		$expiry = "select expiration from session where sessionid=$1";
+		pg_prepare($dbconn, "expiry", $expiry);
+		$result = pg_execute($dbconn, "expiry", array($sessid));
+		$row = pg_fetch_row($result);
+		$dbdate = new DateTime($row[0]);
+		if($dbdate < new DateTime())
+		{
+			echo "Please login again";
+			exit();
+		}
+
+		//the session id # is real and unexpired... that's good
+		//	you don't want people donating under someone else's name.
 		$summary = "select * from project where projid=$1";
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
@@ -87,8 +114,8 @@
 							<span class="glyphicon glyphicon-user"></span> My Profile
 						</a>
 							
-						<!--Fakeish log out button-->
-						<a href="index.html" class="navbar-btn btn btn-primary"">
+						<!--Real log out button-->
+						<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary"">
 							<span class="glyphicon glyphicon-off"></span> Log Out
 						</a>
 						</div>
@@ -135,13 +162,13 @@
 				<input type="radio" name="rating" value="3"> 3
 				<input type="radio" name="rating" value="4"> 4
 				<input type="radio" name="rating" value="5"> 5
-				<button type="button" class="btn btn-success" id="rate" onclick="rate('<?php echo $id?>', '<?php echo $uname?>')">Rate
+				<button type="button" class="btn btn-success" id="rate" onclick="rate('<?php echo $sessid?>', '<?php echo $id?>')">Rate
 			</div>
 
 			<div class="row">
 			<h3>Donate</h3>
 				<input type="text" id="donation">
-				<button id="donate" class="btn btn-success" type="button" onclick="donate('<?php echo $uname?>', '<?php echo $id?>')">Support the cause!</button> <br>
+				<button id="donate" class="btn btn-success" type="button" onclick="donate('<?php echo $sessid?>', '<?php echo $id?>')">Support the cause!</button> <br>
 				<p id="antiocd" style="color:red;font-size:70%"></p>
 			</div>
 		</div>
