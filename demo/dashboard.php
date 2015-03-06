@@ -33,7 +33,7 @@
 				<table>
 				<tr>
 					<td>Description</td>
-					<td>Current Funding</td>
+					<td>Current Funding</td>Current Funding
 					<td>Target Funding</td>
 				</tr>
 
