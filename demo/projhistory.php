@@ -112,7 +112,7 @@
 				</tr>
 				<tr>
 					<td><b>Current Fudning:</b></td>
-					<td><?php echo "$row[2]"?></span></td>
+					<td>$<?php echo "$row[2]"?></span></td>
 				</tr>
 				<tr>
 					<td><b>Target Fuding:</b></td>
@@ -145,7 +145,7 @@
 				<tr>
 					<td>$row[0]</td>
 					<td>$row[1]</td>
-					<td>$row[2]</td>
+					<td>\$$row[2]</td>
 					<td>$row[3]</td>
 				</tr>
 					";
