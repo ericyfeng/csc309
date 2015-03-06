@@ -134,64 +134,66 @@
 					</div>
 				</nav>
 
-		<h1>Create a New Project</h1>
-		<form action="addproj.php?sessid=<?php echo $sessid?>" onsubmit="return validate()" method="POST">
-			<table>
-				<tr>
-					<td>Description:</td>
-					<td><input type="text" name="description" required></td>
-				</tr>
-				<tr>
-					<td>Required Funding:</td>
-					<td><input type="text" name="goalamount" required></td>
-				</tr>
-				<tr>
-					<td>End Date:</td> 
-					<td>
-						<select id="month" name="month" required>
-							<option value="1">January</option>
-							<option value="2">February</option>
-							<option value="3">March</option>
-							<option value="4">April</option>
-							<option value="5">May</option>
-							<option value="6">June</option>
-							<option value="7">July</option>
-							<option value="8">August</option>
-							<option value="9">September</option>
-							<option value="10">October</option>
-							<option value="11">November</option>
-							<option value="12">December</option>
-						</select>
-						<select id="day" name="day" required>
-							<?php 
-								for($i=1; $i<=31; $i++)
-								{?>
-									<option value="<?php echo $i?>"><?php echo $i?></option>
+		<div class="container">
+			<h1>Create a New Project</h1>
+			<form action="addproj.php?sessid=<?php echo $sessid?>" onsubmit="return validate()" method="POST">
+				<table class="table table-bordered table-striped">
+					<tr>
+						<td>Description:</td>
+						<td><input type="text" name="description" required></td>
+					</tr>
+					<tr>
+						<td>Required Funding:</td>
+						<td><input type="text" name="goalamount" required></td>
+					</tr>
+					<tr>
+						<td>End Date:</td> 
+						<td>
+							<select id="month" name="month" required>
+								<option value="1">January</option>
+								<option value="2">February</option>
+								<option value="3">March</option>
+								<option value="4">April</option>
+								<option value="5">May</option>
+								<option value="6">June</option>
+								<option value="7">July</option>
+								<option value="8">August</option>
+								<option value="9">September</option>
+								<option value="10">October</option>
+								<option value="11">November</option>
+								<option value="12">December</option>
+							</select>
+							<select id="day" name="day" required>
+								<?php 
+									for($i=1; $i<=31; $i++)
+									{?>
+										<option value="<?php echo $i?>"><?php echo $i?></option>
+									<?php
+									}
+								?>
+							</select>
+							<select id="year" name="year" required>
 								<?php
-								}
-							?>
-						</select>
-						<select id="year" name="year" required>
-							<?php
-								date_default_timezone_set("EST");
-								$year = date("Y");
-								for($i=$year; $i<=$year+5; $i++)
-								{?>
-									<option value="<?php echo $i?>"><?php echo $i?></option>
-								<?php
-								}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>Location:</td>
-					<td><input type="text" name="location" required></input></td>
-				</tr>
-				<tr><td><input type="submit" value="Let's do it!"></input></td></tr>
-			</table>
-		</form>
-		<p id="warning" style="color:red;font-size:70%"></p>
+									date_default_timezone_set("EST");
+									$year = date("Y");
+									for($i=$year; $i<=$year+5; $i++)
+									{?>
+										<option value="<?php echo $i?>"><?php echo $i?></option>
+									<?php
+									}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Location:</td>
+						<td><input type="text" name="location" required></input></td>
+					</tr>
+				</table>
+				<input type="submit" class="btn btn-success"value="Let's do it!"></input>
+			</form>
+			<p id="warning" style="color:red;font-size:70%"></p>
+		</div>
 	</body>
 </html>
 
