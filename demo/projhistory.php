@@ -15,7 +15,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script>
-			function addinit(id)
+			function addinit(sessid, pid)
 			{
 				var email = document.getElementById("newinit").value;
 				var ajax = new XMLHttpRequest();
@@ -25,7 +25,7 @@
 				}
 				ajax.open("POST", "addinit.php", true);
 				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				ajax.send("id="+id+"&email="+email);
+				ajax.send("sessid="+sessid+"&email="+email+"&pid="+pid);
 			}
 		</script>
 
@@ -93,8 +93,14 @@
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
 		$row = pg_fetch_row($result);
-		if($row[8]==0) $rating="No ratings yet";
-		else $rating=$row[8];
+		if($row[8]==0) 
+		{
+			$rating="No ratings yet";
+		}
+		else
+		{
+			$rating=$row[8];
+		}
 	?>
 
 		<!--Black nav bar-->
@@ -133,7 +139,7 @@
 				</div>
 				<div class="modal-body">
 					<input type="text" id="newinit"></input>
-					<input type="button" class="btn btn-warning" onclick="addinit('<?php echo $id?>')" value="+">
+					<input type="button" class="btn btn-warning" onclick="addinit('<?php echo $sessid?>', '<?php echo $id?>')" value="+">
 				</div>
 				</div>
 			</div>
