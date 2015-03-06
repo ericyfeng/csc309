@@ -95,7 +95,7 @@
 		</div>
 
 		<!--Project stats-->
-		<div class="container-fluid">
+		<div class="container">
 			<h3><b><?php echo "$row[5]"?></b></h3>
 			<table class="table table-striped table-bordered">
 				<tr>
