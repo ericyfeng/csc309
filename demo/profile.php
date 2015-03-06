@@ -3,7 +3,7 @@
 	<head>
 		<title>Simple Profile Management</title>
 		<script>
-			function addInterest (buttonid, interest, email)
+			function addInterest (buttonid, commid, email)
 			{
 				document.getElementById(buttonid).style.visibility="hidden";
 				updateInterest = new XMLHttpRequest();
@@ -13,7 +13,7 @@
 				}
 				updateInterest.open("POST", "updateInterest.php", true);
 				updateInterest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				updateInterest.send("interestid="+interest+"&email="+email);
+				updateInterest.send("commid="+commid+"&email="+email);
 			}
 			function verbose(v1, v2)
 			{
@@ -29,8 +29,9 @@
 			$fname = $_GET["fname"];
 			$lname = $_GET["lname"];
 			$email = $_GET["user"];
+
 			$dbconn = pg_connect("dbname=cs309 user=Daniel");
-			$myinterest = "select description from personalinterests natural join interests where email=$1";
+			$myinterest = "select description from personalinterests natural join community where email=$1";
 			pg_prepare($dbconn, "myinterest", $myinterest);
 			$result = pg_execute($dbconn, "myinterest", array($email));
 		?>
@@ -50,7 +51,7 @@
 			
 			<h3>Add an interest:</h3><br>
 				<?php
-				$unchosen = "select * from interests where (interestid) not in (select interestid from personalinterests where email=$1)";
+				$unchosen = "select * from community where (commid) not in (select commid from personalinterests where email=$1)";
 				pg_prepare($dbconn, "unchosen", $unchosen);
 				$result = pg_execute($dbconn, "unchosen", array($email));
 			
