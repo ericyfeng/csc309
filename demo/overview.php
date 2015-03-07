@@ -18,8 +18,12 @@
 		//for ajax updating the current $$ amount after you donate for INSTANT GRATIFICATION
 		function donate(sessid, projid)
 		{
-			document.getElementById("antiocd").innerHTML="**to prevent OCD donations, the donation button has been disabled."
-			document.getElementById("donate").disabled = true;
+			var donation = document.getElementById("donation").value;
+			if(donation < 1)
+			{
+				document.getElementById("antiocd").innerHTML="How can you donate a negative amount???"
+				return;
+			}
 			var newAmount = new XMLHttpRequest();
 			newAmount.onreadystatechange= function ()
 			{
@@ -27,7 +31,7 @@
 			}
 			newAmount.open("POST", "addmoney.php", true);
 			newAmount.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			newAmount.send("sessid="+sessid+"&projid="+projid+"&amount="+document.getElementById("donation").value);
+			newAmount.send("sessid="+sessid+"&projid="+projid+"&amount="+donation);
 		}
 
 		//for ajax updating the current rating so you can see your impact right away and warn you of rating more than once

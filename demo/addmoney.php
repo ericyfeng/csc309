@@ -19,6 +19,13 @@
 			$amount = $_POST["amount"];
 			$email = $_SESSION["email"]; //email is stored in the php session
 
+			//before doing ANYTHING, check if the amount is at least $1
+			if($amount < 1)
+			{
+				echo "How are you donating a negative amount?";
+				exit();
+			}
+
 			//check if session id is real or faked
 			$validnum = "select count(*) from session where sessionid=$1";
 			pg_prepare($dbconn, "validnum", $validnum);

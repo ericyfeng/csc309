@@ -20,7 +20,7 @@
 		//automatically add the new interest/community to the user's list
 		function addInterest (buttonid, commid, sessid)
 		{
-			document.getElementById(buttonid).style.visibility="gone";
+			document.getElementById(buttonid).style.display="none";
 			updateInterest = new XMLHttpRequest();
 			updateInterest.onreadystatechange= function ()
 			{
