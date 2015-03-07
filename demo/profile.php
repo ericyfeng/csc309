@@ -17,22 +17,19 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script>
-			function addInterest (buttonid, commid, sessid)
+		//automatically add the new interest/community to the user's list
+		function addInterest (buttonid, commid, sessid)
+		{
+			document.getElementById(buttonid).style.visibility="gone";
+			updateInterest = new XMLHttpRequest();
+			updateInterest.onreadystatechange= function ()
 			{
-				document.getElementById(buttonid).style.visibility="hidden";
-				updateInterest = new XMLHttpRequest();
-				updateInterest.onreadystatechange= function ()
-				{
-					document.getElementById("interests").innerHTML=updateInterest.responseText;
-				}
-				updateInterest.open("POST", "updateInterest.php", true);
-				updateInterest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				updateInterest.send("commid="+commid+"&sessid="+sessid);
+				document.getElementById("interests").innerHTML=updateInterest.responseText;
 			}
-			function verbose(v1, v2)
-			{
-					document.getElementById("interests").innerHTML=v1+" "+v2;
-			}
+			updateInterest.open("POST", "updateInterest.php", true);
+			updateInterest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			updateInterest.send("commid="+commid+"&sessid="+sessid);
+		}
 		</script>
 	</head>
 
@@ -96,8 +93,10 @@
 				</nav>
 
 		<div class="container">
+
+			<!--List of the current interestsed communities-->
 			<h1><?php echo"$fname $lname"?> 's Profile</h1>
-			<h3>My Interests</h3>
+			<h3>My Communities Interests</h3>
 				<div id="interests">
 					<ul>
 						<?php
@@ -108,20 +107,19 @@
 					</ul>
 				</div>
 			
+			<!--List of community interests the user hasen't chosen-->
 			<h3>Add an interest:</h3><br>
-				<?php
-				$unchosen = "select * from community where (commid) not in (select commid from personalinterests where email=$1)";
-				pg_prepare($dbconn, "unchosen", $unchosen);
-				$result = pg_execute($dbconn, "unchosen", array($email));
+			<?php
+			$unchosen = "select * from community where (commid) not in (select commid from personalinterests where email=$1)";
+			pg_prepare($dbconn, "unchosen", $unchosen);
+			$result = pg_execute($dbconn, "unchosen", array($email));
 			
-				while($row = pg_fetch_row($result))
-				{
-					$id = $row[0];
-					echo "<button id=\"button$id\" onclick=\"addInterest('button$id', '$id', '$sessid')\"> \n $row[1] </button><br>\n";
-
-				}
-
-				?>
+			while($row = pg_fetch_row($result))
+			{
+				$id = $row[0];
+				echo "<button id=\"button$id\" onclick=\"addInterest('button$id', '$id', '$sessid')\"> \n $row[1] </button><br>\n";
+			}
+			?>
 		</div>
 	</body>
 </html>

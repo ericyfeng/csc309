@@ -5,15 +5,14 @@
 <html>
 	<body>
 		<?php
+			//standard error print and config
 			date_default_timezone_set("America/Toronto");
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 
 			$dbconn = pg_connect("dbname=cs309 user=Daniel");
-			$email = $_SESSION["email"];
+
 			$sessid = $_POST["sessid"];
-			$projid = $_POST["projid"];
-			$rating = $_POST["rating"];
 
 			//check if session id is real or faked
 			$validnum = "select count(*) from session where sessionid=$1";
@@ -37,6 +36,11 @@
 				echo "Please login again";
 				exit();
 			}
+
+			//setup variables for adding a rating
+			$email = $_SESSION["email"];
+			$projid = $_POST["projid"];
+			$rating = $_POST["rating"];
 
 			//to prevent uprating of a project by friends, you can only vote once per project
 			$multirate = "select count(*) from rating where email=$1 and projid=$2";

@@ -15,41 +15,43 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script>
-			function donate(sessid, projid)
+		//for ajax updating the current $$ amount after you donate for INSTANT GRATIFICATION
+		function donate(sessid, projid)
+		{
+			document.getElementById("antiocd").innerHTML="**to prevent OCD donations, the donation button has been disabled."
+			document.getElementById("donate").disabled = true;
+			var newAmount = new XMLHttpRequest();
+			newAmount.onreadystatechange= function ()
 			{
-				document.getElementById("antiocd").innerHTML="**to prevent OCD donations, the donation button has been disabled."
-				document.getElementById("donate").disabled = true;
-				var newAmount = new XMLHttpRequest();
-				newAmount.onreadystatechange= function ()
-				{
-					document.getElementById("current").innerHTML="$"+newAmount.responseText;
-				}
-				newAmount.open("POST", "addmoney.php", true);
-				newAmount.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				newAmount.send("sessid="+sessid+"&projid="+projid+"&amount="+document.getElementById("donation").value);
+				document.getElementById("current").innerHTML="$"+newAmount.responseText;
 			}
+			newAmount.open("POST", "addmoney.php", true);
+			newAmount.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			newAmount.send("sessid="+sessid+"&projid="+projid+"&amount="+document.getElementById("donation").value);
+		}
 
-			function rate(sessid, projid)
+		//for ajax updating the current rating so you can see your impact right away and warn you of rating more than once
+		function rate(sessid, projid)
+		{
+			var ratingGroup = document.getElementsByName("rating");
+			var rating;
+			for(var i=0; i < 5; i++)
 			{
-				var ratingGroup = document.getElementsByName("rating");
-				var rating;
-				for(var i=0; i < 5; i++)
+				if(ratingGroup[i].checked)
 				{
-					if(ratingGroup[i].checked)
-					{
-						rating=i+1; //ratings start at 1, button counting starts at 0
-						break;
-					}
+					rating=i+1; //ratings start at 1, button counting starts at 0
+					break;
 				}
-				var ajax = new XMLHttpRequest();
-				ajax.onreadystatechange = function ()
-				{
-					document.getElementById("liverating").innerHTML=ajax.responseText;
-				}
-				ajax.open("POST", "addrating.php", true);
-				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				ajax.send("sessid="+sessid+"&projid="+projid+"&rating="+rating);
 			}
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function ()
+			{
+				document.getElementById("liverating").innerHTML=ajax.responseText;
+			}
+			ajax.open("POST", "addrating.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&projid="+projid+"&rating="+rating);
+		}
 		</script>
 		<title>Simple Project Overview</title>
 	</head>
@@ -125,9 +127,9 @@
 
 		<div class="container">
 
-			<!--Project summary information-->
 			<div class="row">
 
+			<!--Print project name-->
 			<h1> <?php echo "$row[5]"?> </h1>
 
 			<!--Project tags-->
@@ -143,6 +145,7 @@
 				?>
 			</ul>
 
+			<!--Project summary information-->
 			<table class="table table-bordered table-striped">
 				<tr><td><b>Starting Date:</b></td><td><?php echo "$row[3]"?></td></tr>
 				<tr><td><b>End Date:</b></td><td><?php echo "$row[4]"?></td></tr>
@@ -152,6 +155,7 @@
 			</table>
 			</div>
 
+			<!--The initiator's long description of a project-->
 			<div class="row">
 				<h4>Detailed Information About the Project:</h4>
 				<p><?php echo $longdesc?></p>
@@ -159,21 +163,22 @@
 
 			<!--Project initiator information-->
 			<div class="row">
-			<h3>Project Initiators</h3>
-			<ul>
-				<?php
-					$inits = "select fname, lname from initiator natural join users where projid=$1";
-					pg_prepare($dbconn, "inits", $inits);
-					$result = pg_execute($dbconn, "inits", array($id));
-					while ($row = pg_fetch_row($result))
-					{?>
-						<li><?php echo"$row[0] $row[1]"?></li>
+				<h3>Project Initiators</h3>
+				<ul>
 					<?php
-					}
-				?>
-			</ul>
+						$inits = "select fname, lname from initiator natural join users where projid=$1";
+						pg_prepare($dbconn, "inits", $inits);
+						$result = pg_execute($dbconn, "inits", array($id));
+						while ($row = pg_fetch_row($result))
+						{?>
+							<li><?php echo"$row[0] $row[1]"?></li>
+						<?php
+						}
+					?>
+				</ul>
 			</div>
 
+			<!--The rating area-->
 			<div class="row">
 			<h3>Rate this project</h3>
 				<p><b>Current Rating:</b> <span id="liverating"><?php echo $rating?></span></p>
@@ -185,10 +190,12 @@
 				<button type="button" class="btn btn-success" id="rate" onclick="rate('<?php echo $sessid?>', '<?php echo $id?>')">Rate
 			</div>
 
+			<!--The donation area: the main attraction-->
 			<div class="row">
 			<h3>Donate</h3>
 				<input type="text" id="donation">
 				<button id="donate" class="btn btn-success" type="button" onclick="donate('<?php echo $sessid?>', '<?php echo $id?>')">Support the cause!</button> <br>
+				<!--Warning box about donating twice in a short period of time-->
 				<p id="antiocd" style="color:red;font-size:70%"></p>
 			</div>
 		</div>

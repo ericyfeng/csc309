@@ -15,35 +15,37 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script>
-			function addinit(sessid, pid)
+		//for ajax feedback on whether your attempt to add a person as an initiator worked
+		function addinit(sessid, pid)
+		{
+			var email = document.getElementById("newinit").value;
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function ()
 			{
-				var email = document.getElementById("newinit").value;
-				var ajax = new XMLHttpRequest();
-				ajax.onreadystatechange = function ()
-				{
-					document.getElementById("status").innerHTML=ajax.responseText;
-				}
-				ajax.open("POST", "addinit.php", true);
-				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				ajax.send("sessid="+sessid+"&email="+email+"&pid="+pid);
+				document.getElementById("status").innerHTML=ajax.responseText;
 			}
+			ajax.open("POST", "addinit.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&email="+email+"&pid="+pid);
+		}
 
-			function addtag(sessid, pid)
+		//for ajax updating of your project's tag list
+		function addtag(sessid, pid)
+		{
+			var commsel = document.getElementById("newtags");
+			var commid = commsel.value;
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function ()
 			{
-				var commsel = document.getElementById("newtags");
-				var commid = commsel.value;
-				var ajax = new XMLHttpRequest();
-				ajax.onreadystatechange = function ()
-				{
-					document.getElementById("tags").innerHTML=ajax.responseText;
-				}
-				ajax.open("POST", "addtag.php", true);
-				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-				ajax.send("sessid="+sessid+"&commid="+commid+"&pid="+pid);
+				document.getElementById("tags").innerHTML=ajax.responseText;
 			}
+			ajax.open("POST", "addtag.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&commid="+commid+"&pid="+pid);
+		}
 		</script>
 
-		<title>Simple History</title>
+		<title>Your Project History</title>
 	</head>
 	
 	<body>
@@ -96,18 +98,13 @@
 
 		//FINALL the session id is real, it isn't expired, and this person is an initiator of the project
 		//	let's get on with the show
-		$name = "select fname, lname from users where email=$1";
-		pg_prepare($dbconn, "name", $name);
-		$result = pg_execute($dbconn, "name", array($email));
-		$row = pg_fetch_row($result);
-		$fname = $row[0];
-		$lname = $row[1];
-
 		$summary = "select * from project where projid=$1";
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
 		$row = pg_fetch_row($result);
-		if($row[8]==0) 
+
+		//for an esthetic touch, don't display a rating of 0 if nobody has voted yet
+		if($row[8] == 0) 
 		{
 			$rating="No ratings yet";
 		}
@@ -190,7 +187,6 @@
 			</div>
 		</div>
 
-		<!--Project stats-->
 		<div class="container">
 			<h3><b><?php echo "$row[5]"?></b></h3>
 
@@ -207,6 +203,7 @@
 				?>
 			</ul>
 
+			<!--Project stats-->
 			<table class="table table-striped table-bordered">
 				<tr>
 					<td><b>Starting Date:</b></td>
@@ -234,8 +231,10 @@
 				</tr>
 			</table>
 
+			<!--Used to display the ajax result of whether adding another person as an initiator worked or not-->
 			<p id="status" style="color:blue;font-size:70%"></p>
 
+			<!--Show the user what he typed in as the descriptive paragraph to the public-->
 			<h4>Description to the public:</h4>
 			<p><?php echo $longdescription?></p>
 

@@ -4,16 +4,20 @@
 ?>
 
 <html>
+	<head>
+		<title>Add Donation Backend</title>
+	</head>
+
 	<body>
 		<?php
 			date_default_timezone_set("America/Toronto");
+			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
+			//retrieve the donation information from the form POST information that was sent over
 			$projid = $_POST["projid"];
 			$sessid = $_POST["sessid"];
 			$amount = $_POST["amount"];
-			$email = $_SESSION["email"];
-
-			$dbconn = pg_connect("dbname=cs309 user=Daniel");
+			$email = $_SESSION["email"]; //email is stored in the php session
 
 			//check if session id is real or faked
 			$validnum = "select count(*) from session where sessionid=$1";
@@ -51,10 +55,12 @@
 			pg_prepare($dbconn, "syncdb", $syncdb);
 			$result = pg_execute($dbconn, "syncdb", array($newamount, $projid));
 
-			//log the donation
+			//log the donation in the funder table
 			$logdonation = "insert into funder (email, projid, datestamp, amount) values ($1, $2, $3, $4)";
 			pg_prepare($dbconn, "logdonation", $logdonation);
 			pg_execute($dbconn, "logdonation", array($email, $projid, date("Y-m-d"), $amount));
+
+			//send back the new amount so it can be updated
 			echo $newamount;
 		?>
 	</body>

@@ -6,21 +6,21 @@
 <html>
 	<body>
 		<?php
+			//standard error reporting and config
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 			date_default_timezone_set('America/Toronto');
-
-			$sessid = $_GET["sessid"];
 			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
 			//check if session id is real or faked
+			$sessid = $_GET["sessid"];
 			$validnum = "select count(*) from session where sessionid=$1";
 			pg_prepare($dbconn, "validnum", $validnum);
 			$result = pg_execute($dbconn, "validnum", array($sessid));
 			$row = pg_fetch_row($result);
 			if($row[0] == 0)
 			{
-				echo "Please login again DNE"; //do not give hints about the failed login
+				echo "Please login again"; //do not give hints about the failed login
 				exit();
 			}
 
@@ -33,12 +33,12 @@
 
 			if($dbdate < new DateTime())
 			{
-				echo "Please login again EXP";
+				echo "Please login again";
 				exit();
 			}
 
 
-			//retrieve the information from the form entry fields
+			//retrieve the information from the form entry fields about the new project
 			$goalamount = $_POST["goalamount"];
 			$email = $_SESSION["email"];
 			$description = $_POST["description"];
@@ -67,6 +67,7 @@
 			pg_prepare($dbconn, "newinit", $newinit);
 			pg_execute($dbconn, "newinit", array($id, $email));
 
+			//send the person back to the dashboard screen after project creation
 			header("Location: dashboard.php?sessid=$sessid");
 		?>
 	</body>

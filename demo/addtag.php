@@ -10,10 +10,12 @@
 
 	<body>
 		<?php
+			//setup error print and config
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
-			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 			date_default_timezone_set('America/Toronto');
+
+			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
 			//check if session id is real or faked
 			$sessid = $_POST["sessid"];
@@ -39,27 +41,22 @@
 				exit();
 			}
 
+			//add the tag to the community endorsement table
 			$pid = $_POST["pid"];
 			$commid = $_POST["commid"];
 			$ins = "insert into communityendorsement values ($1, $2)";
 			pg_prepare($dbconn, "ins", $ins);
 			pg_execute($dbconn, "ins", array($commid, $pid));
 			
-			$verify = "select count(*) from communityendorsement where commid=$1 and projid=$2";
-			pg_prepare($dbconn, "verify", $verify);
-			$result = pg_execute($dbconn, "verify", array($commid, $pid));
-			$row = pg_fetch_row($result);
-			$worked = $row[0];
-			if($worked == 1)
+			//get the new list of tags associated with the project to return by ajax
+			$currentTags = "select description from communityendorsement natural join community where projid=$1";
+			pg_prepare($dbconn, "currentTags", $currentTags);
+			$result3 = pg_execute($dbconn, "currentTags", array($pid));
+			while($row3 = pg_fetch_row($result3))
 			{
-				$currentTags = "select description from communityendorsement natural join community where projid=$1";
-				pg_prepare($dbconn, "currentTags", $currentTags);
-				$result3 = pg_execute($dbconn, "currentTags", array($pid));
-				while($row3 = pg_fetch_row($result3))
-				{
-					echo "<li class=\"glyphicon glyphicon-tag btn btn-danger\"> $row3[0]</li> ";
-				}
+				echo "<li class=\"glyphicon glyphicon-tag btn btn-danger\"> $row3[0]</li> ";
 			}
+
 		?>
 	</body>
 </html>

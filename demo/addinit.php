@@ -5,15 +5,17 @@
 
 <html>
 	<head>
-		<title>Simple Add Owner</title>
+		<title>Add Owner Backend</title>
 	</head>
 
 	<body>
 		<?php
+			//standard error reporting and config setup
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
-			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 			date_default_timezone_set('America/Toronto');
+
+			$dbconn = pg_connect("dbname=cs309 user=Daniel");
 
 			//check if session id is real or faked
 			$sessid = $_POST["sessid"];
@@ -39,12 +41,15 @@
 				exit();
 			}
 
+			//valid session id# that isn't expired, proceed to add the person as an initiator
 			$pid = $_POST["pid"];
 			$email = $_POST["email"];
 			$ins = "insert into initiator values ($1, $2)";
 			pg_prepare($dbconn, "ins", $ins);
 			pg_execute($dbconn, "ins", array($pid, $email));
 			
+			//check if adding the person was successful, perhaps the person is already on the list.
+			//need to know to send back the appropriate message to the user
 			$verify = "select count(*) from initiator where projid=$1 and email=$2";
 			pg_prepare($dbconn, "verify", $verify);
 			$result = pg_execute($dbconn, "verify", array($pid, $email));

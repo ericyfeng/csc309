@@ -38,12 +38,12 @@
 			$commid = $_POST["commid"];
 			$email = $_SESSION["email"];
 
-
+			//insert the user's new interest
 			$insert = "insert into personalinterests values ($1, $2)";
 			pg_prepare($dbconn, "insert", $insert);
 			pg_execute($dbconn, "insert", array($email, $commid));
 
-			//straight up copy and pasted from profile.php initial display of interests
+			//return a list of all the interests for the my profile page
 			$myinterest = "select description from personalinterests natural join community where email=$1";
 			pg_prepare($dbconn, "myinterest", $myinterest);
 			$result = pg_execute($dbconn, "myinterest", array($email));
