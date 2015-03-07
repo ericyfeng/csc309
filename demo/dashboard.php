@@ -16,6 +16,35 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<title>Simple Dashboard</title>
+
+		<script>
+			function filtertags()
+			{
+				var tags = document.getElementsByClassName("tagtoggle");
+				var i;
+				for(i=0; i<tags.length; i++)
+				{
+					if(!tags[i].checked)
+					{
+						var blacklist = document.getElementsByClassName(tags[i].id);
+						var j;
+						for(j=0; j<blacklist.length; j++)
+						{
+							blacklist[j].style.display = "none";
+						}
+					}
+					else
+					{
+						var fixlist = document.getElementsByClassName(tags[i].id);
+						var j;
+						for(j=0; j<fixlist.length; j++)
+						{
+							fixlist[j].style.display = "table-row";
+						}
+					}
+				}
+			}
+		</script>
 	</head>
 
 	<body>
@@ -80,63 +109,93 @@
 				
 				<!--Guts of the webpage-->
 				<div class="container-fluid">
-					<h3>My Projects</h3>
-					<table class="table table-striped">
-						<thead>
-						<tr>
-							<th>Description</th>
-							<th>Current Funding</th>
-							<th>Target Funding</th>
-						</tr>
-						</thead>
+					<div class="row">
+						<div class="col-sm-2">
+							<button type="button" class="glyphicon glyphicon-tag btn btn-danger" onclick="filtertags()"> Filter by tag</button>
+							<ul>
+							<?php
+								$lscomm = "select * from community";
+								pg_prepare($dbconn, "lscomm", $lscomm);
+								$result4 = pg_execute($dbconn, "lscomm", array());
+								while($row4 = pg_fetch_row($result4))
+								{
+									echo "<li><input class=\"tagtoggle\" type=\"checkbox\" id=\"comm$row4[0]\" checked=\"yes\"> $row4[1]</input></li>";
+								}
+							?>
+							</ul>
+						</div>
 
-					<!--PHP to fetch the user's projects 1 by 1 and creat the corresponding rows-->
-					<?php
-					$myproj = "select description, curramount, goalamount, projid from initiator natural join project where email=$1";
-					pg_prepare($dbconn, "myproj", $myproj);
-					$result = pg_execute($dbconn, "myproj", array($email));
+						<div class="col-sm-9">
+							<h3>My Projects</h3>
+							<table class="table table-striped">
+								<thead>
+								<tr>
+									<th>Description</th>
+									<th>Current Funding</th>
+									<th>Target Funding</th>
+								</tr>
+								</thead>
 
-					//create a new table entry for each of the user's projects
-					while($row = pg_fetch_row($result))
-					{
-						$description=$row[0];
-						$curramount=$row[1];
-						$goalamount=$row[2];
-						$projid=$row[3];
-						echo "<tr>
-								<td><a href=\"projhistory.php?p=$projid&sessid=$sessid\">$description</a></td>
-								<td>\$$curramount</td>
-								<td>\$$goalamount</td>
-							</tr>";
-					}?>
+							<!--PHP to fetch the user's projects 1 by 1 and creat the corresponding rows-->
+							<?php
+							$myproj = "select description, curramount, goalamount, projid from initiator natural join project where email=$1";
+							pg_prepare($dbconn, "myproj", $myproj);
+							$result = pg_execute($dbconn, "myproj", array($email));
+
+							//create a new table entry for each of the user's projects
+							while($row = pg_fetch_row($result))
+							{
+								$description=$row[0];
+								$curramount=$row[1];
+								$goalamount=$row[2];
+								$projid=$row[3];
+								echo "<tr>
+										<td><a href=\"projhistory.php?p=$projid&sessid=$sessid\">$description</a></td>
+										<td>\$$curramount</td>
+										<td>\$$goalamount</td>
+									</tr>";
+							}?>
 
 
-					</table>			
-					<h3>Other Projects</h3>
-					<table class="table table-striped">
-						<thead>
-						<tr>
-							<th>Description</th>
-							<th>End Date</th>
-							<th>Location</th>
-						</tr>
-						</thead>
-					<?php
-					$others = "select distinct projid, description, enddate, location from initiator natural join project where (projid) not in (select projid from initiator where email=$1)";
-					pg_prepare($dbconn, "others", $others);
-					$result = pg_execute($dbconn, "others", array($email));
-
-					while($row = pg_fetch_row($result))
-					{?>
-						<tr>
-							<td><a href="overview.php?p=<?php echo $row[0]?>&sessid=<?php echo $sessid?>"> <?php echo $row[1]?></a><br></td>
-							<td><?php echo $row[2]?></td>
-							<td><?php echo $row[3]?></td>
-						</tr>
-					<?php
-					}
-					?>
-					</table>
+							</table>			
+							<h3>Other Projects</h3>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Description</th>
+										<th>End Date</th>
+										<th>Location</th>
+									</tr>
+								</thead>
+							<?php
+							$others = "select distinct projid, description, enddate, location from initiator natural join project where (projid) not in (select projid from initiator where email=$1)";
+							pg_prepare($dbconn, "others", $others);
+							$result = pg_execute($dbconn, "others", array($email));
+							$iteration = 0;
+							$taglist = "taglist";
+							while($row = pg_fetch_row($result))
+							{
+								${$taglist.$iteration} = "select commid from communityendorsement where projid=$1";
+								pg_prepare($dbconn, "taglist".$iteration, ${$taglist.$iteration});
+								$result2 = pg_execute($dbconn, "taglist".$iteration, array($row[0]));
+								$tagstring="";
+								while($row2 = pg_fetch_row($result2))
+								{
+									$tagstring = $tagstring . "comm" . $row2[0] . " ";
+								}
+								$iteration++;
+							?>
+								<tr class="<?php echo $tagstring?>">
+									<td><a href="overview.php?p=<?php echo $row[0]?>&sessid=<?php echo $sessid?>"> <?php echo $row[1]?></a><br></td>
+									<td><?php echo $row[2]?></td>
+									<td><?php echo $row[3]?></td>
+								</tr>
+							<?php
+							}
+							?>
+							</table>
+						</div>
+					</div>
 				</div>
 			<?php
 			}
