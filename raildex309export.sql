@@ -63,7 +63,8 @@ CREATE TABLE project
     description character varying(100),
     location character varying(40) NOT NULL,
     popularity integer NOT NULL,
-    rating double precision NOT NULL
+    rating double precision NOT NULL,
+	longdesc character varying(1000)
 );
 CREATE SEQUENCE project_projid_seq
     START WITH 1
@@ -220,9 +221,9 @@ libprohibited@raildex.tv	3
 zapper@raildex.tv	4
 \.
 
-COPY project (projid, goalamount, curramount, startdate, enddate, description, location, popularity, rating) FROM stdin;
-1	500	20	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	Toumas Appartment	100	100
-2	50000	1000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	Academy City	100	100
+COPY project (projid, goalamount, curramount, startdate, enddate, description, location, popularity, rating, longdesc) FROM stdin;
+1	500	20	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	Toumas Appartment	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
+2	50000	1000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	Academy City	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
 \.
 
 
