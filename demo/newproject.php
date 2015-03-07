@@ -122,7 +122,7 @@
 					<div class="navbar-nav navbar-right">
 
 						<!--My profile button-->
-						<a href="profile.php?fname=<?php echo $fname?>&lname=<?php echo $lname?>&user=<?php echo $uname?>" class="navbar-btn btn btn-primary"">
+						<a href="profile.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
 							<span class="glyphicon glyphicon-user"></span> My Profile
 						</a>
 							
@@ -139,7 +139,7 @@
 			<form action="addproj.php?sessid=<?php echo $sessid?>" onsubmit="return validate()" method="POST">
 				<table class="table table-bordered table-striped">
 					<tr>
-						<td>Description:</td>
+						<td>Title:</td>
 						<td><input type="text" name="description" required></td>
 					</tr>
 					<tr>
@@ -189,6 +189,11 @@
 						<td>Location:</td>
 						<td><input type="text" name="location" required></input></td>
 					</tr>
+
+					<tr>
+						<td>Description:</td>
+						<td><textarea name="longdesc" required></textarea></td>
+					</tr>					
 				</table>
 				<input type="submit" class="btn btn-success"value="Let's do it!"></input>
 			</form>

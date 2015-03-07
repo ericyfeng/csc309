@@ -46,13 +46,14 @@
 			$month = $_POST["month"];
 			$day = $_POST["day"];
 			$year = $_POST["year"];
+			$longdesc = $_POST["longdesc"];
 			//merge all the date information into 1 string
 			$date = $year . "-" . $month . "-" . $day;
 				
 			//send project infromation into project table
-			$newproj = "insert into project (goalamount, curramount, startdate, enddate, description, location, popularity, rating) values ($1, 0, $2, $3, $4, $5, 0, 0)";
+			$newproj = "insert into project (goalamount, curramount, startdate, enddate, description, location, popularity, rating, longdesc) values ($1, 0, $2, $3, $4, $5, 0, 0, $6)";
 			pg_prepare($dbconn, "newproj", $newproj);
-			pg_execute($dbconn, "newproj", array($goalamount, date("Y-m-d"), $date, $description, $location));
+			pg_execute($dbconn, "newproj", array($goalamount, date("Y-m-d"), $date, $description, $location, $longdesc));
 
 			//get new project id for setting up initiator
 			$findid = "select projid from project where description=$1";

@@ -98,6 +98,7 @@
 		$result = pg_execute($dbconn, "summary", array($id));
 		$row = pg_fetch_row($result);
 		$rating = $row[8];
+		$longdesc = $row[9];
 	?>
 
 		<!--Black nav bar-->
@@ -110,7 +111,7 @@
 					<div class="navbar-nav navbar-right">
 
 						<!--My profile button-->
-						<a href="profile.php?fname=<?php echo $fname?>&lname=<?php echo $lname?>&user=<?php echo $uname?>" class="navbar-btn btn btn-primary"">
+						<a href="profile.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
 							<span class="glyphicon glyphicon-user"></span> My Profile
 						</a>
 							
@@ -126,8 +127,22 @@
 
 			<!--Project summary information-->
 			<div class="row">
-			<h1>Project Summary</h1>
-			<h3> <?php echo "$row[5]"?> </h3>
+
+			<h1> <?php echo "$row[5]"?> </h1>
+
+			<!--Project tags-->
+			<ul class="list-inline" id="tags">
+				<?php
+					$currentTags = "select description from communityendorsement natural join community where projid=$1";
+					pg_prepare($dbconn, "currentTags", $currentTags);
+					$result3 = pg_execute($dbconn, "currentTags", array($id));
+					while($row3 = pg_fetch_row($result3))
+					{
+						echo "<li class=\"glyphicon glyphicon-tag btn btn-danger\"> $row3[0]</li> ";
+					}
+				?>
+			</ul>
+
 			<table class="table table-bordered table-striped">
 				<tr><td><b>Starting Date:</b></td><td><?php echo "$row[3]"?></td></tr>
 				<tr><td><b>End Date:</b></td><td><?php echo "$row[4]"?></td></tr>
@@ -135,6 +150,11 @@
 				<tr><td><b>Current Fudning:</b></td><td><span id="current">$<?php echo "$row[2]"?></span></td></tr>
 				<tr><td><b>Target Fuding:</b></td><td>$<?php echo "$row[1]"?></td></tr>
 			</table>
+			</div>
+
+			<div class="row">
+				<h4>Detailed Information About the Project:</h4>
+				<p><?php echo $longdesc?></p>
 			</div>
 
 			<!--Project initiator information-->

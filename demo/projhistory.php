@@ -27,6 +27,20 @@
 				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 				ajax.send("sessid="+sessid+"&email="+email+"&pid="+pid);
 			}
+
+			function addtag(sessid, pid)
+			{
+				var commsel = document.getElementById("newtags");
+				var commid = commsel.value;
+				var ajax = new XMLHttpRequest();
+				ajax.onreadystatechange = function ()
+				{
+					document.getElementById("tags").innerHTML=ajax.responseText;
+				}
+				ajax.open("POST", "addtag.php", true);
+				ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				ajax.send("sessid="+sessid+"&commid="+commid+"&pid="+pid);
+			}
 		</script>
 
 		<title>Simple History</title>
@@ -101,6 +115,7 @@
 		{
 			$rating=$row[8];
 		}
+		$longdescription = $row[9];
 	?>
 
 		<!--Black nav bar-->
@@ -111,6 +126,11 @@
 					</div>
 
 					<div class="navbar-nav navbar-right">
+
+						<!--Add Another Tag button-->
+						<a href="#" class="navbar-btn btn btn-danger" data-toggle="modal" data-target="#addtag">
+							<span class="glyphicon glyphicon-tag"></span> +
+						</a>
 					
 						<!--Add Another Owner button-->
 						<a href="#" class="navbar-btn btn btn-success" data-toggle="modal" data-target="#addowner">
@@ -118,12 +138,12 @@
 						</a>
 
 						<!--My profile button-->
-						<a href="profile.php?fname=<?php echo $fname?>&lname=<?php echo $lname?>&user=<?php echo $uname?>" class="navbar-btn btn btn-primary"">
+						<a href="profile.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
 							<span class="glyphicon glyphicon-user"></span> My Profile
 						</a>
 							
 						<!--Real functioning log out button-->
-						<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary"">
+						<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
 							<span class="glyphicon glyphicon-off"></span> Log Out
 						</a>
 						</div>
@@ -145,9 +165,48 @@
 			</div>
 		</div>
 
+		<!--Add tag popup-->
+		<div class="modal fade" id="addtag" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Add A Tag</h4>
+				</div>
+				<div class="modal-body">
+					<select id="newtags" name="newtags">
+						<?php
+							$unused = "select * from community where (commid) not in (select commid from communityendorsement where projid=$1)";
+							pg_prepare($dbconn, "unused", $unused);
+							$result2 = pg_execute($dbconn, "unused", array($id));
+							while($row2 = pg_fetch_row($result2))
+							{
+								echo "<option value=\"$row2[0]\">$row2[1]</option>";
+							}
+						?>
+					</select>
+					<input type="button" class="btn btn-warning" onclick="addtag('<?php echo $sessid?>', '<?php echo $id?>')" value="+">
+				</div>
+				</div>
+			</div>
+		</div>
+
 		<!--Project stats-->
 		<div class="container">
 			<h3><b><?php echo "$row[5]"?></b></h3>
+
+			<!--Project tags-->
+			<ul class="list-inline" id="tags">
+				<?php
+					$currentTags = "select description from communityendorsement natural join community where projid=$1";
+					pg_prepare($dbconn, "currentTags", $currentTags);
+					$result3 = pg_execute($dbconn, "currentTags", array($id));
+					while($row3 = pg_fetch_row($result3))
+					{
+						echo "<li class=\"glyphicon glyphicon-tag btn btn-danger\"> $row3[0]</li> ";
+					}
+				?>
+			</ul>
+
 			<table class="table table-striped table-bordered">
 				<tr>
 					<td><b>Starting Date:</b></td>
@@ -176,6 +235,9 @@
 			</table>
 
 			<p id="status" style="color:blue;font-size:70%"></p>
+
+			<h4>Description to the public:</h4>
+			<p><?php echo $longdescription?></p>
 
 			<!--Donation History-->
 			<h3><b>Donation History</b></h3>
