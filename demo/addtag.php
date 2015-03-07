@@ -41,8 +41,20 @@
 				exit();
 			}
 
-			//add the tag to the community endorsement table
+			//check for malicously direct fed data
 			$pid = $_POST["pid"];
+			$vemail = $_SESSION["email"];
+			$verifyowner = "select count(*) from initiator where email=$1 and projid=$2";
+			pg_prepare($dbconn, "verifyowner", $verifyowner);
+			$vresult = pg_execute($dbconn, "verifyowner", array($vemail, $pid));
+			$vrow = pg_fetch_row($vresult);
+			if($vrow[0] != 1)
+			{
+				echo "You aren't authorized to add tags";
+				exit();
+			}
+
+			//add the tag to the community endorsement table
 			$commid = $_POST["commid"];
 			$ins = "insert into communityendorsement values ($1, $2)";
 			pg_prepare($dbconn, "ins", $ins);
