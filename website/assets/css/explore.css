@@ -1,0 +1,42 @@
+
+#headerwrap {
+	background: url(../img/cta/cta02.jpg) no-repeat center top;
+	margin-top: 10px;
+	padding-top: 0px;
+	min-height: 200px;
+	
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#headerwrap h1 {
+	margin-top: 10px;
+	margin-bottom: 30px;
+}
+
+#menu {
+	margin-top: 40px;
+
+}
+
+
+#sidebar {
+  height: 100%;
+  padding-right: 0;
+  padding-top: 20px;
+}
+#sidebar .nav {
+  width: 95%;
+}
+#sidebar li {
+  border:0 #f2f2f2 solid;
+  border-bottom-width:1px;
+}
+

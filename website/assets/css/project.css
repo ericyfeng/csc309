@@ -1,0 +1,23 @@
+.project-info p{
+	margin-top: -12px;
+}
+
+.progress {
+	margin-top:-18px;
+}
+
+.project-info button {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+a {
+	color: #555555;
+}
+
+a:hover,
+a:focus {
+    color: #74c9be;
+    text-decoration: none;
+    outline: 0;
+}
