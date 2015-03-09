@@ -35,7 +35,7 @@
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 		date_default_timezone_set('America/Toronto');
-		$dbconn = pg_connect("dbname=cs309 user=eric");
+		$dbconn = pg_connect("dbname=cs309 user=ericfeng");
 	?>
 
 	<! ========== NAV BAR ==================================================================================================== 
@@ -102,6 +102,9 @@
 		?>
 			<?php 
 				$progress = round(($row[2] / $row[1]), 2) * 100;
+				$enddate = new DateTime($row[4]);
+				$today = new DateTime(date("Y-m-d"));
+				$remaining = date_diff($today, $enddate) ;
 			?>
 			<div class="col-lg-4 col-md-4 col-xs-12 desc">
 				<a class="b-link-fade b-animate-go" href="#"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
@@ -118,7 +121,7 @@
  					</div>
 				</div>			
 				<hr-d>
-				<p class="time"><i class="fa fa-tag"></i> Technology | <i class="fa fa-comment-o"></i> 3 | <i class="fa fa-calendar"></i> 14 Nov. | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
+				<p class="time"><i class="fa fa-tag"></i> Technology | <i class="fa fa-comment-o"></i> 3 | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
 
 			</div><!-- col-lg-4 -->
 		<?php
