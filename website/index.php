@@ -406,8 +406,10 @@
 			</div><! --/row -->
 		</div><!-- /container -->
 	</div><!-- /f -->
-	
-	<!--- MODAL -->
+
+	<! ========== MODALS ======================================================================================================== 
+	=============================================================================================================================>    
+
     <div class="modal fade" id="signup" tabindex="-1" role= "dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -415,32 +417,32 @@
 					<h4>Sign Up</h4>
 				</div>
 				<div class="modal-body">
-					<form id="logincheck">
+					<form action="signup.php" method="POST">
 						<div class="form-group">
 							<label for="fname">First Name:</label>
-							<input type="text" class="form-control" id="fname" placeholder="Please Enter Your First Name">
+							<input type="text" class="form-control" id="fname" name="fname" placeholder="Please Enter Your First Name">
 						</div>
 						<div class="form-group">
 							<label for="text">Last Name:</label>
-							<input type="text" class="form-control" id="lname" placeholder="Please Enter Your Last Name">
+							<input type="text" class="form-control" id="lname" name="lname" placeholder="Please Enter Your Last Name">
 						</div>				
 						<div class="form-group">
 							<label for="email">Email:</label>
-							<input type="email" class="form-control" id="email" placeholder="Please Enter Your Email">
+							<input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email">
 						</div>
 						<div class="form-group">
 							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="pwd" placeholder="Please Enter Your Password">
+							<input type="password" class="form-control" id="pwd" name="passwd"  placeholder="Please Enter Your Password">
 						</div>
 						<div class="form-group">
 							<label for="repwd">Confirm Password:</label>
-							<input type="password" class="form-control" id="repwd" placeholder="Please Re-Enter Your Password">
+							<input type="password" class="form-control" id="repwd" name="confirm" placeholder="Please Re-Enter Your Password">
 						</div>
+						<div class="modal-footer">
+				      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				      		<input type="submit" class="btn btn-primary" value="Sign Up">
+	  					</div>						
 					</form>
-					<div class="modal-footer">
-			      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			      		<button type="button" class="btn btn-primary">Submit</button>
-  					</div>
 				</div>
 			</div>
 		</div>
@@ -486,7 +488,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/retina.js"></script>
-
 
   	<script>
 		$(window).scroll(function() {
