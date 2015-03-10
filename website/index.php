@@ -23,9 +23,8 @@
 
 
 		<!-- Main Jquery & Hover Effects. Should load first -->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script src="assets/js/hover_pack.js"></script>
-
 	</head>
 
 	<body>
@@ -35,7 +34,7 @@
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 		date_default_timezone_set('America/Toronto');
-		$dbconn = pg_connect("dbname=cs309 user=ericfeng");
+		$dbconn = pg_connect("dbname=cs309 user=Daniel");
 	?>
 
 	<! ========== NAV BAR ==================================================================================================== 
@@ -417,7 +416,7 @@
 					<h4>Sign Up</h4>
 				</div>
 				<div class="modal-body">
-					<form action="signup.php" method="POST">
+
 						<div class="form-group">
 							<label for="fname">First Name:</label>
 							<input type="text" class="form-control" id="fname" name="fname" placeholder="Please Enter Your First Name">
@@ -432,17 +431,18 @@
 						</div>
 						<div class="form-group">
 							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="pwd" name="passwd"  placeholder="Please Enter Your Password">
+							<input type="password" class="form-control" id="passwd" name="passwd"  placeholder="Please Enter Your Password">
 						</div>
 						<div class="form-group">
 							<label for="repwd">Confirm Password:</label>
-							<input type="password" class="form-control" id="repwd" name="confirm" placeholder="Please Re-Enter Your Password">
+							<input type="password" class="form-control" id="confirm" name="confirm" placeholder="Please Re-Enter Your Password">
 						</div>
 						<div class="modal-footer">
 				      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				      		<input type="submit" class="btn btn-primary" value="Sign Up">
+				      		<button type="button" class="btn btn-primary" onclick="regjax()">Sign Up!</button>
 	  					</div>						
-					</form>
+
+					<p id="status"></p>
 				</div>
 			</div>
 		</div>
@@ -502,8 +502,30 @@
 		});
 	</script>    
 
+	<script>
+	function regjax()
+	{
+		var fname = document.getElementById("fname").value;
+		var lname = document.getElementById("lname").value;
+		var email = document.getElementById("email").value;
+		var passwd = document.getElementById("passwd").value;
+		var confirm = document.getElementById("confirm").value;
 
-
+		var ajax = new XMLHttpRequest();
+		ajax.onreadystatechange = function ()
+		{
+			document.getElementById("status").innerHTML = ajax.responseText;
+		}
+		ajax.open("POST", "signup.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("fname="+fname+"&lname="+lname+"&email="+email+"&passwd="+passwd+"&confirm="+confirm);
+	}
+	</script>
   
   </body>
 </html>
+
+
+
+
+
