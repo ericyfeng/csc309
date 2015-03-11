@@ -73,6 +73,16 @@
 			$myinterest = "select description from personalinterests natural join community where email=$1";
 			pg_prepare($dbconn, "myinterest", $myinterest);
 			$result = pg_execute($dbconn, "myinterest", array($email));
+
+			$myrating = "select reputation from users where email=$1";
+			pg_prepare($dbconn, "myrating", $myrating);
+			$result2 = pg_execute($dbconn, "myrating", array($email));
+			$row2 = pg_fetch_row($result2);
+			$myratingvalue = $row2[0];
+			if($myratingvalue == 0)
+			{
+				$myratingvalue = "You have never been rated";
+			}
 		?>
 
 		<!--Black nav bar-->
@@ -106,7 +116,7 @@
 						}?>
 					</ul>
 				</div>
-			
+			<h3>My Community Rating: <?php echo $myratingvalue?></h3>
 			<!--List of community interests the user hasen't chosen-->
 			<h3>Add an interest:</h3><br>
 			<?php
@@ -117,7 +127,7 @@
 			while($row = pg_fetch_row($result))
 			{
 				$id = $row[0];
-				echo "<button id=\"button$id\" onclick=\"addInterest('button$id', '$id', '$sessid')\"> \n $row[1] </button><br>\n";
+				echo "<button class=\"btn btn-primary\" id=\"button$id\" onclick=\"addInterest('button$id', '$id', '$sessid')\"> \n $row[1] </button><br>\n";
 			}
 			?>
 		</div>
