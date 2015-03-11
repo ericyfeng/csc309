@@ -1,7 +1,6 @@
 --remove old data
 SET client_encoding = 'LATIN1';
 set search_path=public;
-drop table if exists admin cascade;
 drop table if exists users cascade;
 drop table if exists personalinterests cascade;
 drop table if exists project cascade;
@@ -11,15 +10,6 @@ drop table if exists initiator cascade;
 drop table if exists funder cascade;
 drop table if exists rating cascade;
 drop table if exists session cascade;
-----------------------------------------------------------------------
--------------admin table--------------------------------------------
-----------------------------------------------------------------------
-CREATE TABLE admin 
-(
-    adminusername character varying(40) NOT NULL,
-    password character varying(40) NOT NULL
-);
-ALTER TABLE ONLY admin ADD CONSTRAINT admin_pkey PRIMARY KEY (adminusername);
 
 ----------------------------------------------------------------------
 -------------users table--------------------------------------------
@@ -31,7 +21,8 @@ CREATE TABLE users
     lname character varying(40) NOT NULL,
     password character varying(40) NOT NULL,
     reputation integer NOT NULL,
-    profession character varying(40)
+    profession character varying(40),
+	admin integer NOT NULL
 );
 ALTER TABLE ONLY users ADD CONSTRAINT users_pkey PRIMARY KEY (email);
 
@@ -195,13 +186,14 @@ ALTER TABLE ONLY session
 --* Each project has 2 funders from random other characters seen on the show
 
 --add users as well as other characters from the show as donors
-COPY users (email, fname, lname, password, reputation) FROM stdin;
-right_hand@raildex.tv	Touma	Kamijou	unlucky	100
-libprohibited@raildex.tv	Index	Prohibited	feedme	100
-zapper@raildex.tv	Mikoto	Misaka	railgun	100
-creepo@raildex.tv	Touya	Kamijou	dad	100
-whitehat@raildex.tv	Something	Uiharu	flowers	100
-legends@raildex.tv	Ruiko	Saten	superstition	100
+COPY users (email, fname, lname, password, reputation, admin) FROM stdin;
+right_hand@raildex.tv	Touma	Kamijou	unlucky	100	0
+libprohibited@raildex.tv	Index	Prohibited	feedme	100	0
+zapper@raildex.tv	Mikoto	Misaka	railgun	100	0
+creepo@raildex.tv	Touya	Kamijou	dad	100	0
+whitehat@raildex.tv	Something	Uiharu	flowers	100	0
+legends@raildex.tv	Ruiko	Saten	superstition	100	0
+root	Absolute	Authority	toor	0	1
 \.
 
 COPY community (commid, description) FROM stdin;
@@ -256,4 +248,5 @@ zapper@raildex.tv	2000-03-06 19:03:17.433082-05
 creepo@raildex.tv	2000-03-06 19:03:17.433082-05
 whitehat@raildex.tv	2000-03-06 19:03:17.433082-05
 legends@raildex.tv	2000-03-06 19:03:17.433082-05
+root	2099-03-06 19:03:17.433082-05
 \.

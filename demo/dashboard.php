@@ -5,7 +5,6 @@
 
 <html>
 	<head>
-
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
@@ -101,7 +100,15 @@
 				</div>
 
 				<div class="navbar-nav navbar-right">
-
+					<?php
+					if($_SESSION["admin"] == 1)
+					{
+					?>
+					<!--Admin button-->
+					<a href="admin2.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-danger">
+						<span class="glyphicon glyphicon-wrench"></span> Administration
+					</a>
+					<?php }?>
 					<!--New project button-->
 					<a href="newproject.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-success">
 						<span class="glyphicon glyphicon-asterisk"></span> New Project
@@ -141,7 +148,6 @@
 
 				<!--The main right column for seeing your own projects as well as other peoples's projects-->
 				<div class="col-sm-9">
-
 					<!--Display the currently logged in user's projects-->
 					<h3>My Projects</h3>
 					<table class="table table-striped">
@@ -182,6 +188,13 @@
 								<th>Description</th>
 								<th>End Date</th>
 								<th>Location</th>
+								<?php
+								if($_SESSION["admin"] == 1)
+								{
+									//echo"<th><button class=\"btn btn-danger glyphicon glyphicon-remove\"></button></th>";
+									echo"<th>Remove</th>";
+								}
+								?>
 							</tr>
 						</thead>
 

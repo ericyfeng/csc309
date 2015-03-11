@@ -105,6 +105,16 @@
 		$row = pg_fetch_row($result);
 		$rating = $row[8];
 		$longdesc = $row[9];
+		$exp = $row[4];
+		$expDate = new DateTime($exp);
+		if($dbdate > $expDate)
+		{
+			$finished = 1;
+		}
+		else
+		{
+			$finished = 0;
+		}
 	?>
 
 		<!--Black nav bar-->
@@ -152,7 +162,7 @@
 			<!--Project summary information-->
 			<table class="table table-bordered table-striped">
 				<tr><td><b>Starting Date:</b></td><td><?php echo "$row[3]"?></td></tr>
-				<tr><td><b>End Date:</b></td><td><?php echo "$row[4]"?></td></tr>
+				<tr><td><b>End Date:</b></td><td><?php echo "$exp"?></td></tr>
 				<tr><td><b>Location:</b></td><td><?php echo "$row[6]"?></td></tr>
 				<tr><td><b>Current Fudning:</b></td><td><span id="current">$<?php echo "$row[2]"?></span></td></tr>
 				<tr><td><b>Target Fuding:</b></td><td>$<?php echo "$row[1]"?></td></tr>
@@ -197,10 +207,20 @@
 			<!--The donation area: the main attraction-->
 			<div class="row">
 			<h3>Donate</h3>
+				<?php
+				if($finished == 0)
+				{
+				?>
 				<input type="text" id="donation">
 				<button id="donate" class="btn btn-success" type="button" onclick="donate('<?php echo $sessid?>', '<?php echo $id?>')">Support the cause!</button> <br>
 				<!--Warning box about donating twice in a short period of time-->
 				<p id="antiocd" style="color:red;font-size:70%"></p>
+				<?php 
+				} 
+				else
+				{
+					echo"<p>This project has expired</p>";
+				}?>
 			</div>
 		</div>
 	</body>

@@ -24,7 +24,7 @@
 		$result = pg_execute($dbconn, "preparelogin", array($email, $passwd));
 		$row = pg_fetch_row($result);
 
-		if($row[0])
+		if($row[0] == 1)
 		{
 			//set secure database session information to prevent faking in "GET/POST" information
 			$sessionid="select round(random()*10^9), (current_timestamp + '4 hours')";
@@ -38,7 +38,7 @@
 			pg_execute($dbconn, "setdb", array($rand, $exp, $email));
 
 			//get first name and last name for php session information to prevent constantly dialing into database
-			$getname = "select fname, lname from users where email=$1";
+			$getname = "select fname, lname, admin from users where email=$1";
 			pg_prepare($dbconn, "getname", $getname);
 			$result = pg_execute($dbconn, "getname", array($email));
 			$row = pg_fetch_row($result);
@@ -49,6 +49,7 @@
 			$_SESSION["fname"] = $fname;
 			$_SESSION["lname"] = $lname;
 			$_SESSION["email"] = $email;
+			$_SESSION["admin"] = $row[2];
 
 			//redirect user to dashboard on successful login
 			header("Location: dashboard.php?sessid=$rand");
