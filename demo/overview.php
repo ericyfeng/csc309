@@ -21,7 +21,7 @@
 			var donation = document.getElementById("donation").value;
 			if(donation < 1)
 			{
-				document.getElementById("antiocd").innerHTML="How can you donate a negative amount???"
+				document.getElementById("antiocd").innerHTML="You can't donate less than 1 dollar"
 				return;
 			}
 			var newAmount = new XMLHttpRequest();
@@ -186,8 +186,8 @@
 				<tr><td><b>Starting Date:</b></td><td><?php echo "$row[3]"?></td></tr>
 				<tr><td><b>End Date:</b></td><td><?php echo "$exp"?></td></tr>
 				<tr><td><b>Location:</b></td><td><?php echo "$row[6]"?></td></tr>
-				<tr><td><b>Current Fudning:</b></td><td><span id="current">$<?php echo "$row[2]"?></span></td></tr>
-				<tr><td><b>Target Fuding:</b></td><td>$<?php echo "$row[1]"?></td></tr>
+				<tr><td><b>Current Funding:</b></td><td><span id="current">$<?php echo "$row[2]"?></span></td></tr>
+				<tr><td><b>Target Funding:</b></td><td>$<?php echo "$row[1]"?></td></tr>
 			</table>
 			</div>
 

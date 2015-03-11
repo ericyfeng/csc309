@@ -106,7 +106,7 @@
 
 			<!--List of the current interestsed communities-->
 			<h1><?php echo"$fname $lname"?> 's Profile</h1>
-			<h3>My Communities Interests</h3>
+			<h3>My Communities' Interests</h3>
 				<div id="interests">
 					<ul>
 						<?php
