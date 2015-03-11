@@ -39,7 +39,7 @@
 		{
 			var ratingGroup = document.getElementsByName("rating");
 			var rating;
-			for(var i=0; i < 5; i++)
+			for(var i=0; i < 10; i++)
 			{
 				if(ratingGroup[i].checked)
 				{
@@ -55,6 +55,28 @@
 			ajax.open("POST", "addrating.php", true);
 			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 			ajax.send("sessid="+sessid+"&projid="+projid+"&rating="+rating);
+		}
+
+		function urate(sessid, email, disp)
+		{
+			var uratingGroup = document.getElementsByName("urating");
+			var urating;
+			for(var i=0; i < 10; i++)
+			{
+				if(uratingGroup[i].checked)
+				{
+					urating=i+1; //ratings start at 1, button counting starts at 0
+					break;
+				}
+			}
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function ()
+			{
+				document.getElementById(disp).innerHTML=ajax.responseText;
+			}
+			ajax.open("POST", "addurating.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&ratee="+email+"&urating="+urating);
 		}
 		</script>
 		<title>Simple Project Overview</title>
@@ -180,12 +202,41 @@
 				<h3>Project Initiators</h3>
 				<ul>
 					<?php
-						$inits = "select fname, lname from initiator natural join users where projid=$1";
+						$inits = "select fname, lname, reputation, email from initiator natural join users where projid=$1";
 						pg_prepare($dbconn, "inits", $inits);
 						$result = pg_execute($dbconn, "inits", array($id));
 						while ($row = pg_fetch_row($result))
-						{?>
-							<li><?php echo"$row[0] $row[1]"?></li>
+						{
+							$initfname = $row[0];
+							$initlname = $row[1];
+							$initrep = $row[2];
+							$initemail = $row[3];
+						?>
+							<li><?php echo"$initfname $initlname"?></li>
+							<ul>
+								<li><b>Reputation</b>: <span id="<?php echo 'rep_' . $initemail?>">
+															<?php if($initrep > 0)
+															{
+																echo $initrep;
+															}
+															else
+															{
+																echo "Be the first to rate $initfname";
+															}?></span></li>
+								<li>
+									<input type="radio" name="urating" value="1"> 1
+									<input type="radio" name="urating" value="2"> 2
+									<input type="radio" name="urating" value="3"> 3
+									<input type="radio" name="urating" value="4"> 4
+									<input type="radio" name="urating" value="5"> 5
+									<input type="radio" name="urating" value="6"> 6
+									<input type="radio" name="urating" value="7"> 7
+									<input type="radio" name="urating" value="8"> 8
+									<input type="radio" name="urating" value="9"> 9
+									<input type="radio" name="urating" value="10"> 10
+									<button type="button" class="btn btn-success" id="rate" onclick="urate('<?php echo $sessid?>', '<?php echo $initemail?>', '<?php echo 'rep_' . $initemail?>')"> Rate <?php echo $initfname?>
+								</li>
+							</ul>
 						<?php
 						}
 					?>
@@ -201,7 +252,12 @@
 				<input type="radio" name="rating" value="3"> 3
 				<input type="radio" name="rating" value="4"> 4
 				<input type="radio" name="rating" value="5"> 5
-				<button type="button" class="btn btn-success" id="rate" onclick="rate('<?php echo $sessid?>', '<?php echo $id?>')">Rate
+				<input type="radio" name="rating" value="6"> 6
+				<input type="radio" name="rating" value="7"> 7
+				<input type="radio" name="rating" value="8"> 8
+				<input type="radio" name="rating" value="9"> 9
+				<input type="radio" name="rating" value="10"> 10
+				<button type="button" class="btn btn-success" id="rate" onclick="rate('<?php echo $sessid?>', '<?php echo $id?>')">Rate Project
 			</div>
 
 			<!--The donation area: the main attraction-->

@@ -10,6 +10,7 @@ drop table if exists initiator cascade;
 drop table if exists funder cascade;
 drop table if exists rating cascade;
 drop table if exists session cascade;
+drop table if exists userrating cascade;
 
 ----------------------------------------------------------------------
 -------------users table--------------------------------------------
@@ -20,7 +21,7 @@ CREATE TABLE users
     fname character varying(40) NOT NULL,
     lname character varying(40) NOT NULL,
     password character varying(40) NOT NULL,
-    reputation integer NOT NULL,
+    reputation double precision NOT NULL,
     profession character varying(40),
 	admin integer NOT NULL
 );
@@ -176,6 +177,30 @@ ALTER TABLE ONLY session
 ALTER TABLE ONLY session
     ADD CONSTRAINT session_email_fkey FOREIGN KEY (email) REFERENCES users(email);
 
+----------------------------------------------------------------------
+---------------------user rating table--------------------------------
+----------------------------------------------------------------------
+CREATE TABLE userrating (
+    urid integer NOT NULL,
+    rater character varying(40) NOT NULL,
+    ratee character varying(40) NOT NULL,
+    urating integer NOT NULL
+);
+CREATE SEQUENCE userrating_urid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY userrating ALTER COLUMN urid SET DEFAULT nextval('userrating_urid_seq'::regclass);
+SELECT pg_catalog.setval('userrating_urid_seq', 1, false);
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_pkey PRIMARY KEY (urid);
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_ratee_fkey FOREIGN KEY (ratee) REFERENCES users(email);
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_rater_fkey FOREIGN KEY (rater) REFERENCES users(email);
+
 -----------------------------------------------------------------
 -----------------------sample data info--------------------------
 --* 3 Main users at the top
@@ -187,13 +212,13 @@ ALTER TABLE ONLY session
 
 --add users as well as other characters from the show as donors
 COPY users (email, fname, lname, password, reputation, admin) FROM stdin;
-right_hand@raildex.tv	Touma	Kamijou	unlucky	100	0
-libprohibited@raildex.tv	Index	Prohibited	feedme	100	0
-zapper@raildex.tv	Mikoto	Misaka	railgun	100	0
-creepo@raildex.tv	Touya	Kamijou	dad	100	0
-whitehat@raildex.tv	Something	Uiharu	flowers	100	0
-legends@raildex.tv	Ruiko	Saten	superstition	100	0
-root	Absolute	Authority	toor	0	1
+right_hand@raildex.tv	Touma	Kamijou	unlucky	0	0
+libprohibited@raildex.tv	Index	Prohibited	feedme	0	0
+zapper@raildex.tv	Mikoto	Misaka	railgun	0	0
+creepo@raildex.tv	Touya	Kamijou	dad	0	0
+whitehat@raildex.tv	Something	Uiharu	flowers	0	0
+legends@raildex.tv	Ruiko	Saten	superstition	0	0
+root	Absolute	Authority	toor	1000	1
 \.
 
 COPY community (commid, description) FROM stdin;
@@ -238,7 +263,7 @@ COPY funder (fundid, email, projid, datestamp, amount) FROM stdin;
 \.
 
 COPY rating (rid, projid, email, rating) FROM stdin;
-1	2	whitehat@raildex.tv	5
+1	2	whitehat@raildex.tv	10
 \.
 
 COPY session (email, expiration) FROM stdin;
