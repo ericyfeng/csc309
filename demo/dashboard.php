@@ -50,6 +50,18 @@
 				}
 			}
 		}
+
+		function rm(pid, sessid)
+		{
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function ()
+			{
+				document.getElementById(pid).innerHTML=ajax.responseText;
+			}
+			ajax.open("POST", "rmproj.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&pid="+pid);
+		}
 		</script>
 	</head>
 
@@ -156,6 +168,7 @@
 								<th>Description</th>
 								<th>Current Funding</th>
 								<th>Target Funding</th>
+								<th>Cancel</th>
 							</tr>
 						</thead>
 
@@ -172,10 +185,11 @@
 						$curramount = $row[1];
 						$goalamount = $row[2];
 						$projid = $row[3];
-						echo "<tr>
+						echo "<tr id=\"p_$row[3]\">
 								<td><a href=\"projhistory.php?p=$projid&sessid=$sessid\">$description</a></td>
 								<td>\$$curramount</td>
 								<td>\$$goalamount</td>
+								<td><button class=\"btn btn-danger glyphicon glyphicon-remove\" onclick=\"rm('p_$row[3]', '$sessid')\"></button></td>
 							</tr>";
 					}?>
 
@@ -191,7 +205,6 @@
 								<?php
 								if($_SESSION["admin"] == 1)
 								{
-									//echo"<th><button class=\"btn btn-danger glyphicon glyphicon-remove\"></button></th>";
 									echo"<th>Remove</th>";
 								}
 								?>
@@ -229,10 +242,15 @@
 						}
 						$iteration++;
 					?>
-						<tr class="<?php echo $tagstring?>">
+						<tr class="<?php echo $tagstring?>" id="p_<?php echo $row[0]?>">
 							<td><a href="overview.php?p=<?php echo $row[0]?>&sessid=<?php echo $sessid?>"> <?php echo $row[1]?></a><br></td>
 							<td><?php echo $row[2]?></td>
 							<td><?php echo $row[3]?></td>
+							<?php
+							if($_SESSION["admin"] == 1)
+							{
+								echo "<td><button class=\"btn btn-danger glyphicon glyphicon-remove\" onclick=\"rm('p_$row[0]', '$sessid')\"></button></td>";
+							} ?>
 						</tr>
 					<?php
 					}
