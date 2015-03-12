@@ -78,6 +78,22 @@
 			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 			ajax.send("sessid="+sessid+"&ratee="+email+"&urating="+urating);
 		}
+
+		function addcomment(pid, sessid, fname, lname)
+		{
+			var comment = document.getElementById("newcomment").value;
+			var ajax = new XMLHttpRequest();
+			var history = document.getElementById("commentHistory");
+			//don't really need ajax here but this is a convenient way to send the info
+			//	to the db and add the new comment in at the same time
+			ajax.open("POST", "addcomment.php", true);
+			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			ajax.send("sessid="+sessid+"&pid="+pid+"&comment="+comment);
+
+			var newc = document.createElement("li");
+			newc.innerHTML=fname + " " + lname+"<ul><li>"+comment+"</li></ul>";
+			history.appendChild(newc);
+		}
 		</script>
 		<title>Simple Project Overview</title>
 	</head>
@@ -277,6 +293,31 @@
 				{
 					echo"<p>This project has expired</p>";
 				}?>
+			</div>
+
+			<!--The comments section-->
+			<div class="row">
+				<label for="newcomment" maxlength="200">Comment on the project:</label>
+				<textarea class="form-control" rows="4" id="newcomment"></textarea>
+				<button class="btn btn-success" onclick="addcomment('<?php echo $id?>', '<?php echo $sessid?>', '<?php echo $fname?>', '<?php echo $lname?>')">Add Comment</button>
+				<p><br><b>What others think:</b></p>
+				<ul id="commentHistory">
+					<?php
+						$projcomments = "select fname, lname, comment from comment natural join users where projid=$1 order by cid asc";
+						pg_prepare($dbconn, "projcomments", $projcomments);
+						$result = pg_execute($dbconn, "projcomments", array($id));
+						while($row = pg_fetch_row($result))
+						{
+							echo "<li>$row[0] $row[1]
+									<ul><li><p>$row[2]</p></li></ul>
+								</li>";
+						}
+					?>
+
+				</ul>
+			</div>
+			<div class="row">
+				<br><br><br>
 			</div>
 		</div>
 	</body>
