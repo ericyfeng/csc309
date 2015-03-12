@@ -264,6 +264,23 @@
 			}
 		?>
 			</table>
+			
+			<!--Copy and pasted comments area-->
+			<h3><b>What others think:</b></h3>
+			<ul id="commentHistory">
+				<?php
+					$projcomments = "select fname, lname, comment from comment natural join users where projid=$1 order by cid asc";
+					pg_prepare($dbconn, "projcomments", $projcomments);
+					$result = pg_execute($dbconn, "projcomments", array($id));
+					while($row = pg_fetch_row($result))
+					{
+						echo "<li>$row[0] $row[1]
+								<ul><li><p>$row[2]</p></li></ul>
+							</li>";
+					}
+				?>
+			</ul>
+			<br><br><br>
 		</div>
 	</body>
 </html>

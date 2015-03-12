@@ -11,6 +11,7 @@ drop table if exists funder cascade;
 drop table if exists rating cascade;
 drop table if exists session cascade;
 drop table if exists userrating cascade;
+drop table if exists comment cascade;
 
 ----------------------------------------------------------------------
 -------------users table--------------------------------------------
@@ -201,6 +202,30 @@ ALTER TABLE ONLY userrating
 ALTER TABLE ONLY userrating
     ADD CONSTRAINT userrating_rater_fkey FOREIGN KEY (rater) REFERENCES users(email);
 
+----------------------------------------------------------------------
+------------------------comments table--------------------------------
+----------------------------------------------------------------------
+CREATE TABLE comment (
+    cid integer NOT NULL,
+    projid integer NOT NULL,
+    email character varying(40) NOT NULL,
+    comment character varying(300) NOT NULL
+);
+CREATE SEQUENCE comment_cid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY comment ALTER COLUMN cid SET DEFAULT nextval('comment_cid_seq'::regclass);
+SELECT pg_catalog.setval('comment_cid_seq', 4, false);
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (cid);
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+
 -----------------------------------------------------------------
 -----------------------sample data info--------------------------
 --* 3 Main users at the top
@@ -274,4 +299,10 @@ creepo@raildex.tv	2000-03-06 19:03:17.433082-05
 whitehat@raildex.tv	2000-03-06 19:03:17.433082-05
 legends@raildex.tv	2000-03-06 19:03:17.433082-05
 root	2099-03-06 19:03:17.433082-05
+\.
+
+copy comment (cid, projid, email, comment) from stdin;
+1	1	creepo@raildex.tv	It is nice to see my child being so considerate.
+2	2	whitehat@raildex.tv	I would really appreciate not having to sync offline data all the time.
+3	2	legends@raildex.tv	I wont have to waste LTE data anymore looking up more urban legends.
 \.
