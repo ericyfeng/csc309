@@ -84,7 +84,7 @@ CREATE SEQUENCE community_commid_seq
     NO MAXVALUE
     CACHE 1;
 ALTER TABLE ONLY community ALTER COLUMN commid SET DEFAULT nextval('community_commid_seq'::regclass);
-SELECT pg_catalog.setval('community_commid_seq', 2, false);
+SELECT pg_catalog.setval('community_commid_seq', 7, false);
 ALTER TABLE ONLY community ADD CONSTRAINT community_pkey PRIMARY KEY (commid);
 
 ----------------------------------------------------------------------
