@@ -23,7 +23,7 @@
 		session_destroy();
 
 		//go back to the home page after it's done
-		header("Location: index.html");
+		header("Location: index.php");
 		exit();
 	?>
 	</body>
