@@ -8,7 +8,7 @@
 		<meta name="author" content="">
 		<link rel="shortcut icon" href="assets/ico/favicon.png">
 
-		<title>Brand Name</title>
+		<title>HOME</title>
 
 		<link href="assets/css/hover_pack.css" rel="stylesheet">
 
@@ -44,13 +44,13 @@
         <div class="container topnav">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand topnav" href="index.html">Brand Name</a>
+                <a class="navbar-brand topnav" href="index.php">HOME</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#">Explore</a>
+                        <a href="explore.php">Explore</a>
                     </li>
                     <li>
                         <a href="#signup" data-toggle="modal">Sign up</a>
@@ -73,14 +73,16 @@
 			<div class="row centered">
 				<div class="col-lg-8 col-lg-offset-2 mt">
 					<h1>We are a Crowd Funding agency. We focus on Ideas, Awareness, and Execution.</h1>
-    				<p class="mt"><button type="button" class="btn btn-cta btn-lg">LEARN MORE</button></p>
+					<a href="explore.php">
+    					<p class="mt"><button type="button" class="btn btn-cta btn-lg">LEARN MORE</button></p>
+    				</a>
 				</div>
 				
 			</div><!-- /row -->
     	</div><!-- /container -->
     </div> <!-- /headerwrap -->
 
-	<! ========== BLOG POSTS ==================================================================================================== 
+	<! ========== PROJECTS ==================================================================================================== 
 	=============================================================================================================================>    
 	<div class="container">	
 
@@ -94,7 +96,8 @@
 		<div class="row mt">
 		<?php
 			//for now just pull any project in the backend to display
-			$featured = "select * from project order by rating desc limit 6;";
+			$featured = "select projid, goalamount, curramount, startdate, enddate, t1.description, location, popularity, rating, longdesc, community.description from 
+				(select * from project natural join communityendorsement order by rating desc limit 6) t1, community where community.commid=t1.commid;";
 			pg_prepare($dbconn, "featured", $featured);
 			$result = pg_execute($dbconn, "featured", array());
 			while ($row = pg_fetch_row($result)) {
@@ -106,10 +109,11 @@
 				$remaining = date_diff($today, $enddate) ;
 			?>
 			<div class="col-lg-4 col-md-4 col-xs-12 desc">
-				<a class="b-link-fade b-animate-go" href="#"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+				<!-- requires user to login to view projects for now will be changed  -->
+				<a class="b-link-fade b-animate-go" href="#login" data-toggle="modal"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 					<div class="b-wrapper">
 					  	<h4 class="b-from-left b-animate b-delay03"> <?= $row[5] ?></h4>
-					  	<p class="b-from-right b-animate b-delay03">Read More.</p>
+					  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>
 					</div>
 				</a>
 				<p><?= $row[5] ?></p>
@@ -120,7 +124,7 @@
  					</div>
 				</div>			
 				<hr-d>
-				<p class="time"><i class="fa fa-tag"></i> Technology | <i class="fa fa-comment-o"></i> 3 | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
+				<p class="time"><i class="fa fa-tag"></i> <?= $row[10] ?> | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
 
 			</div><!-- col-lg-4 -->
 		<?php
@@ -136,61 +140,13 @@
     		<div class="row">
     			<div class="col-lg-8 col-lg-offset-2">
     				<h2>The probability of success is difficult to estimate;<br/>but if we never try, the chance of success is zero.</h2>
-    				<button type="button" class="btn btn-cta btn-lg">LEARN MORE</button>
+    				<a href="explore.php">
+    					<button type="button" class="btn btn-cta btn-lg">LEARN MORE</button>
+    				</a>
     			</div>
     		</div><!-- /row -->
     	</div><!-- /container -->
     </div><! --/cta01 -->
-
-
-	<! ========== BRANDS & CLIENTS =============================================================================================== 
-	=============================================================================================================================>    
-	<div id="grey">
-		<div class="container">
-			<div class="row mt centered ">
-				<div class="col-lg-4 col-lg-offset-4">
-					<h3>Brands & Clients</h3>
-					<hr>
-				</div><!-- /col-lg-4 -->
-			</div><!-- /row -->
-			
-			<div class="row centered">
-				<div class="col-lg-3 pt">
-					<img class="img-responsive" src="assets/img/clients/client01.png" alt="">
-				</div>
-				<div class="col-lg-3 pt">
-					<img class="img-responsive" src="assets/img/clients/client02.png" alt="">
-				</div>
-				<div class="col-lg-3 pt">
-					<img class="img-responsive" src="assets/img/clients/client03.png" alt="">
-				</div>
-				<div class="col-lg-3 pt">
-					<img class="img-responsive" src="assets/img/clients/client04.png" alt="">
-				</div>
-
-			</div><!-- /row -->
-		</div><!-- /container -->
-	</div><!-- /grey -->
-
-	
-	<! ========== BLACK SECTION ================================================================================================= 
-	=============================================================================================================================>    
-	<div id="black">
-		<div class="container">
-			<div class="row mt centered">
-				<div class="col-lg-4 col-lg-offset-4">
-					<h3>Our Work Process</h3>
-					<hr>
-				</div><!-- /col-lg-4 -->
-			</div><!-- /row -->
-			
-			<div class="row mt">
-				<div class="col-lg-8 col-lg-offset-2">
-					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-				</div><! --/col-lg-8 -->
-			</div><!-- /row -->
-		</div><!-- /container -->
-	</div><!-- /black -->
 
 
 	<! ========== FEATURED ICONS ================================================================================================ 
@@ -207,112 +163,60 @@
 	    		<div class="col-lg-3">
 	    			<p class="capitalize">1</p>
 	    			<h4>Pitch</h4>
-	    			<p>Built for all levels of expertise, whether you need simple pages or complex ones, creating something incredible with Marco is an effortless and intuitive process.</p>
+	    			<p>Present your idea to the crowd through a detailed description of the project.</p>
 	    		</div>
 	    		<div class="col-lg-3">
 	    			<p class="capitalize">2</p>
 	    			<h4>Fund</h4>
-	    			<p>We’ve taken great care to ensure that Marco is fully retina-ready. So it’ll look good on any retina display. We use retina.js to ensure the best view.</p>
+	    			<p>Backers are intrigued and funds your project.</p>
 	    		</div>
 	    		<div class="col-lg-3">
 	    			<p class="capitalize">3</p>
 	    			<h4>Execute</h4>
-	    			<p>Marco fits any device handsomely. We tested our theme in major devices and browsers. Check it out and test it before buy it on responsinator.com.</p>
+	    			<p>Make the project happen with the funds.</p>
 	    		</div>    	
 	
 	    		<div class="col-lg-3">
 	    			<p class="capitalize">4</p>
-	    			<h4>Follow up</h4>
-	    			<p>Good looking animations are an essential part of the new theme design trend. We add animations.css, a cool script to help you enhance your site with style.</p>
+	    			<h4>Follow up/Rewards</h4>
+	    			<p>Provide follow ups with the current situation of the project and give out rewards for the backers.</p>
 	    		</div>
 	    	</div><!-- /row -->
 	    </div><!-- /container -->
     </div><!-- /white -->
 
-	<! ========== CALL TO ACTION 2 ============================================================================================== 
-	=============================================================================================================================>    
-    <div id="cta02">
-    	<div class="container">
-    		<div class="row">
-    			<div class="col-lg-8 col-lg-offset-2">
-    				<h2>Start your own project today and fullfill your dreams today with us!</h2>
-    				<button type="button" class="btn btn-cta btn-lg">LEARN MORE</button>
-    			</div>
-    		</div><!-- /row -->
-    	</div><!-- /container -->
-    </div><! --/cta02 -->
-
-	<! ========== FEATURED ICONS ================================================================================================ 
-	=============================================================================================================================>    
-    <div class="container">
-    	<div class="row mt">
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-flask"></i>
-    			<h4>Built with Bootstrap 3</h4>
-    			<p>Built for all levels of expertise, whether you need simple pages or complex ones, creating something incredible with Marco is an effortless and intuitive process.</p>
-    		</div>
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-eye"></i>
-    			<h4>Retina Display Theme</h4>
-    			<p>We’ve taken great care to ensure that Marco is fully retina-ready. So it’ll look good on any retina display. We use retina.js to ensure the best view.</p>
-    		</div>
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-mobile"></i>
-    			<h4>Responsive Design Always</h4>
-    			<p>Marco fits any device handsomely. We tested our theme in major devices and browsers. Check it out and test it before buy it on responsinator.com.</p>
-    		</div>    	
-
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-cog"></i>
-    			<h4>Really Nice Animations</h4>
-    			<p>Good looking animations are an essential part of the new theme design trend. We add animations.css, a cool script to help you enhance your site with style.</p>
-    		</div>
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-flag"></i>
-    			<h4>Font Awesome Included</h4>
-    			<p>Font Awesome is the most used icon font on Bootstrap. Gives you scalable vector icons that can instantly be customized with the power of CSS.</p>
-    		</div>
-    		<div class="col-lg-4 centered si">
-    			<i class="fa fa-heart"></i>
-    			<h4>Carefully Crafted</h4>
-    			<p>We aim to design both, functional & beautiful themes. Details are an important part of our main concept. We work hard to keep our code and front-end flawless.</p>
-    		</div>    	
-    	</div><!-- /row -->
-    </div><!-- /container -->
-    
-	
-	
-	<! ========== BLACK SECTION ================================================================================================= 
+		
+	<! ========== QUICK STAT ================================================================================================= 
 	=============================================================================================================================>    
 	<div id="black">
 		<div class="container pt">
 			<div class="row mt centered">
 				<div class="col-lg-3">
-					<p><i class="fa fa-instagram"></i></p>
-					<h1>21,337</h1>
+					<p><i class="fa fa-bolt"></i></p>
+					<h1>3,675</h1>
 					<hr>
 					<h4>Projects Live</h4>
 				</div>
 
 				<div class="col-lg-3">
-					<p><i class="fa fa-music"></i></p>
-					<h1>9,764</h1>
+					<p><i class="fa fa-rocket"></i></p>
+					<h1>2,102</h1>
 					<hr>
 					<h4>Projects Funded</h4>
 				</div>
 
 				<div class="col-lg-3">
-					<p><i class="fa fa-trophy"></i></p>
-					<h1>107</h1>
+					<p><i class="fa fa-user"></i></p>
+					<h1>1,130</h1>
 					<hr>
-					<h4>Some other stat</h4>
+					<h4>Total Backers</h4>
 				</div>
 
 				<div class="col-lg-3">
-					<p><i class="fa fa-ticket"></i></p>
-					<h1>209</h1>
+					<p><i class="fa fa-repeat"></i></p>
+					<h1>563</h1>
 					<hr>
-					<h4>Other stat</h4>
+					<h4>Repeat Backers</h4>
 				</div>
 
 			</div><!-- /row -->
@@ -336,13 +240,13 @@
 					<!-- Wrapper for slides -->
 					<div class="carousel-inner">
 						<div class="item active">
-						  <h2>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</h2>
-						  <h5>Paul Morrison - BlackTie.co</h5>
+						  <h2>Thanks to Funder Brand Name, my dreams became reality. It has been a crazy journey but we made it happen!</h2>
+						  <h5>James Cameron - Ninjas on Titanic</h5>
 						</div>
 						
 						<div class="item">
-						  <h2>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</h2>
-						  <h5>Mike Wellington - BlackTie.co</h5>
+						  <h2>I did not expect to get such a great response from the community. Thanks for the support, we did it!</h2>
+						  <h5>Ted Adams - CUPE 3902</h5>
 						</div>
 					</div><!-- /carousel-inner -->
 				
@@ -357,7 +261,7 @@
 	<div id="cta-bar">
 		<div class="container">
 			<div class="row centered">
-				<a href="#"><h4>Are You Ready For The Next Step?</h4></a>
+				<a href="#signup" data-toggle="modal"><h4>Ready For The Next Step? Sign Up NOW!</h4></a>
 			</div>
 		</div><!-- /container -->
 	</div><!-- /cta-bar -->
@@ -370,28 +274,23 @@
 			<div class="row">
 				<!-- ADDRESS -->
 				<div class="col-lg-3">
-					<h4>Our Studio</h4>
+					<h4>Contact Us</h4>
 					<p>
-						Some Ave. 987,<br/>
-						Postal 64733<br/>
-						London, UK.<br/>
+						<i class="fa fa-mobile"></i> +1-123-3902<br/>
+						<i class="fa fa-envelope-o"></i> support@brandname.com
 					</p>
-					<p>
-						<i class="fa fa-mobile"></i> +55 4893.8943<br/>
-						<i class="fa fa-envelope-o"></i> hello@yourdomain.com
-					</p>
-				</div><! --/col-lg-3 -->
+				</div>  <!--/col-lg-3 -->
 				
 
 				<!-- LATEST POSTS -->
 				<div class="col-lg-3">
-					<h4>Latest Posts</h4>
+					<h4>Latest Projects</h4>
 					<p>
-						<i class="fa fa-angle-right"></i> A post with an image<br/>
-						<i class="fa fa-angle-right"></i> Other post with a video<br/>
-						<i class="fa fa-angle-right"></i> A full width post<br/>
-						<i class="fa fa-angle-right"></i> We talk about something nice<br/>
-						<i class="fa fa-angle-right"></i> Yet another single post<br/>
+						<i class="fa fa-angle-right"></i> The Ninja Film<br/>
+						<i class="fa fa-angle-right"></i> Water proof bananas<br/>
+						<i class="fa fa-angle-right"></i> Strike Money<br/>
+						<i class="fa fa-angle-right"></i> Smart Headphones<br/>
+						<i class="fa fa-angle-right"></i> 50 shades of blue novel<br/>
 					</p>
 				</div><!-- /col-lg-3 -->
 				
@@ -402,7 +301,7 @@
 				</div><!-- /col-lg-3 -->
 				
 				
-			</div><! --/row -->
+			</div> <!--/row -->
 		</div><!-- /container -->
 	</div><!-- /f -->
 

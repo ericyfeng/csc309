@@ -59,7 +59,7 @@ CREATE TABLE project
     rating double precision NOT NULL,
 	longdesc character varying(1000)
 );
-CREATE SEQUENCE project_projid_seq
+CREATE SEQUENCE projidroject_projid_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -227,7 +227,7 @@ ALTER TABLE ONLY comment
     ADD CONSTRAINT comment_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
 
 -----------------------------------------------------------------
------------------------sample data info--------------------------
+-----------------------sample data info--------------   ------------
 --* 3 Main users at the top
 --* 2 Interests/main user
 --* Everyone belongs to "raildex tv characters" community
@@ -243,7 +243,7 @@ zapper@raildex.tv	Mikoto	Misaka	railgun	0	0
 creepo@raildex.tv	Touya	Kamijou	dad	0	0
 whitehat@raildex.tv	Something	Uiharu	flowers	0	0
 legends@raildex.tv	Ruiko	Saten	superstition	0	0
-root	Absolute	Authority	toor	1000	1
+root@admin.com	Absolute	Authority	toor	1000	1
 \.
 
 COPY community (commid, description) FROM stdin;
@@ -264,8 +264,8 @@ zapper@raildex.tv	4
 \.
 
 COPY project (projid, goalamount, curramount, startdate, enddate, description, location, popularity, rating, longdesc) FROM stdin;
-1	500	20	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	Toumas Appartment	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
-2	50000	1000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	Academy City	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
+1	500	70	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	Toumas City	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
+2	50000	10000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	Academy City	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
 \.
 
 
@@ -298,7 +298,7 @@ zapper@raildex.tv	2000-03-06 19:03:17.433082-05
 creepo@raildex.tv	2000-03-06 19:03:17.433082-05
 whitehat@raildex.tv	2000-03-06 19:03:17.433082-05
 legends@raildex.tv	2000-03-06 19:03:17.433082-05
-root	2099-03-06 19:03:17.433082-05
+root@admin.com	2099-03-06 19:03:17.433082-05
 \.
 
 copy comment (cid, projid, email, comment) from stdin;
