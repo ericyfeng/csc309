@@ -20,7 +20,7 @@
 	<body>
 		<?php
 			date_default_timezone_set("America/Toronto");
-			$dbconn = pg_connect("dbname=cs309 user=Daniel");
+			$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
 
 			$email = $_SESSION["email"]; //email is stored in the php session
 			$sessid = $_GET["sessid"];

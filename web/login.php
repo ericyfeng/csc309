@@ -14,7 +14,7 @@
 		ini_set('display_errors', 1);
 
 		//database connection variable
-		$dbconn = pg_connect("dbname=cs309 user=Daniel");
+		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
 
 		//check if email and password match
 		$email = $_POST["email"];
