@@ -74,7 +74,7 @@
 		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
 
 		//check if session id is real or faked
-		$sessid = $_GET["sessid"];
+		$sessid = $_SESSION["sessid"];
 		$validnum = "select count(*) from session where sessionid=$1";
 		pg_prepare($dbconn, "validnum", $validnum);
 		$result = pg_execute($dbconn, "validnum", array($sessid));

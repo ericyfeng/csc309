@@ -2,12 +2,6 @@
 	session_start();
 ?>
 
-<html>
-	<head>
-		<title>Secure Login Processing</title>
-	</head>
-	
-	<body>
 	<?php
 		//enable php debugging
 		error_reporting(E_ALL);
@@ -18,10 +12,15 @@
 
 		//check if email and password match
 		$email = $_POST["email"];
-		$passwd = $_POST["passwd"];
-		$verify = "select count(*) from users where email=$1 and password=$2";
+		$password = $_POST["password"];
+		if (empty($email) || empty($password)) {
+			echo "0";
+			exit();
+		}			
+
+		$verify = "select 1 from users where email=$1 and password=$2";
 		pg_prepare($dbconn, "preparelogin", $verify);
-		$result = pg_execute($dbconn, "preparelogin", array($email, $passwd));
+		$result = pg_execute($dbconn, "preparelogin", array($email, $password));
 		$row = pg_fetch_row($result);
 
 		if($row[0] == 1)
@@ -50,20 +49,17 @@
 			$_SESSION["lname"] = $lname;
 			$_SESSION["email"] = $email;
 			$_SESSION["admin"] = $row[2];
-
+			$_SESSION["sessid"] = $rand;
 			//redirect user to dashboard on successful login
-			header("Location: dashboard.php?sessid=$rand");
+			
+			header("Location: ../dashboard.php");
 			exit();
 		}
 		else
 		{
-			echo "Please login again";
+			echo "1";
+			exit();
 		}
 	?>
-	</body>
-</html>
-
-
-
 
 

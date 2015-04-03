@@ -249,79 +249,7 @@
 	<! ========== MODALS ======================================================================================================== 
 	=============================================================================================================================>    
 
-    <div class="modal fade" id="signup" tabindex="-1" role= "dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Sign Up</h4>
-				</div>
-				<div class="modal-body">
-
-						<div class="form-group">
-							<label for="fname">First Name:</label>
-							<input type="text" class="form-control" id="fname" name="fname" placeholder="Please Enter Your First Name">
-						</div>
-						<div class="form-group">
-							<label for="text">Last Name:</label>
-							<input type="text" class="form-control" id="lname" name="lname" placeholder="Please Enter Your Last Name">
-						</div>				
-						<div class="form-group">
-							<label for="email">Email:</label>
-							<input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email">
-						</div>
-						<div class="form-group">
-							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="passwd" name="passwd"  placeholder="Please Enter Your Password">
-						</div>
-						<div class="form-group">
-							<label for="repwd">Confirm Password:</label>
-							<input type="password" class="form-control" id="confirm" name="confirm" placeholder="Please Re-Enter Your Password">
-						</div>
-						<div class="modal-footer">
-				      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				      		<button type="button" class="btn btn-primary" onclick="regjax()">Sign Up!</button>
-	  					</div>						
-
-					<p id="status"></p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="login" tabindex="-1" role= "dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Login</h4>
-				</div>
-				<div class="modal-body">
-					<form action="login.php" method="POST">
-						<div class="form-group">
-							<label for="email">Email:</label>
-							<input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email">
-						</div>
-						<div class="form-group">
-							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="pwd" name="passwd" placeholder="Please Enter Your Password">
-						</div>
-						<div class="checkbox">
-							<label><input type="checkbox">Remember Me</label>
-						</div>
-						<div class="extralogin">
-							<a href="#">Forgot your password?</a>
-							<p>Don't have an account?
-								<a href="#signup" data-toggle="modal" data-dismiss="modal">Register now!</a>
-							</p>	
-						</div>
-						<div class="modal-footer">
-					      	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					      	<input type="submit" class="btn btn-primary" value="Log In">
-  						</div>
-					</form>
-				</div>
-
-			</div>
-		</div>
-	</div>
+	<?php include("template/usermodals.php"); ?>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -340,28 +268,10 @@
 				}
 			});
 		});
-	</script>    
-
-	<script>
-	function regjax()
-	{
-		var fname = document.getElementById("fname").value;
-		var lname = document.getElementById("lname").value;
-		var email = document.getElementById("email").value;
-		var passwd = document.getElementById("passwd").value;
-		var confirm = document.getElementById("confirm").value;
-
-		var ajax = new XMLHttpRequest();
-		ajax.onreadystatechange = function ()
-		{
-			document.getElementById("status").innerHTML = ajax.responseText;
-		}
-		ajax.open("POST", "signup.php", true);
-		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		ajax.send("fname="+fname+"&lname="+lname+"&email="+email+"&passwd="+passwd+"&confirm="+confirm);
-	}
 	</script>
-  
+
+  	<script src="assets/js/signup.js"></script>
+  	<script src="assets/js/signin.js"></script>
   </body>
 </html>
 

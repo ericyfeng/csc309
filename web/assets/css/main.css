@@ -360,6 +360,13 @@ p.capitalize:first-letter {
 	margin: 0 auto;
 }
 
+#reg-status {
+	color: red;
+}
+
+#login-status {
+	color: red;
+}
 
 
 
