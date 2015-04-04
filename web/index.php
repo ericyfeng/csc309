@@ -3,6 +3,10 @@
 	<head>
 		<?php 
 			session_start();
+			if(!isset($_SESSION["loggedin"]))
+			{
+				$_SESSION["loggedin"] = 0;
+			}
 			include("template/head.php");
 		?>
 		<title>HOME</title>
@@ -16,7 +20,14 @@
 		ini_set('display_errors', 1);
 		date_default_timezone_set('America/Toronto');
 		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
-		include("template/navbar.php");
+		if($_SESSION["loggedin"] == 1)
+		{
+			include("template/loginnav.php");
+		}
+		else
+		{
+			include("template/navbar.php");
+		}
 	?>
 
 

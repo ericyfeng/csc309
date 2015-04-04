@@ -20,7 +20,7 @@
 
 		//remove php session variables
 		session_unset();
-		session_destroy();
+		$_SESSION["loggedin"] = 0;
 
 		//go back to the home page after it's done
 		header("Location: index.php");

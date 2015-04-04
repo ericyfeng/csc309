@@ -50,6 +50,7 @@
 			$_SESSION["email"] = $email;
 			$_SESSION["admin"] = $row[2];
 			$_SESSION["sessid"] = $rand;
+			$_SESSION["loggedin"] = 1;
 			//redirect user to dashboard on successful login
 			echo "2";
 			exit();
