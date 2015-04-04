@@ -81,7 +81,7 @@
 					</a>
 							
 					<!--Real deal log out button-->
-					<a href="logout.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
+					<a href="logout.php" class="navbar-btn btn btn-primary">
 						<span class="glyphicon glyphicon-off"></span> Log Out
 					</a>
 				</div>

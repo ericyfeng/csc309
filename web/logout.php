@@ -11,7 +11,7 @@
 		ini_set('display_errors', 1);
 
 		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
-		$sessid = $_GET["sessid"];
+		$sessid = $_SESSION["sessid"];
 		
 		//prematurely expire the session random key in the database
 		$killsess = "update session set expiration=(select localtimestamp) where sessionid=$1";

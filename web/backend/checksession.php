@@ -6,6 +6,7 @@
 
 	if (!isset($_SESSION["sessid"]) && $_SESSION["sessid"] = "" ) {
 		$_SESSION["errmsg"] = "Plase sign in first";
+		$_SESSION["login"] = 0;
 		header("Location: index.php");
 		exit();
 	}	
@@ -16,9 +17,11 @@
 	pg_prepare($dbconn, "verify", $verify);
 	$result = pg_execute($dbconn, "verify", array($sessid));
 	$row = pg_fetch_row($result);
+	$_SESSION["login"] = 1;	
 
 	if ($row[0] != 1) {
 		$_SESSION["errmsg"] = "Please sign in again";
+		$_SESSION["login"] = 0;
 		header("Location: index.php");
 		exit();
 	}
@@ -30,6 +33,7 @@
 	$dbdate = new DateTime($row[0]);
 	if($dbdate < new DateTime())
 	{
+		$_SESSION["login"] = 0;		
 		header("Location: index.php");
 		exit();
 	}
