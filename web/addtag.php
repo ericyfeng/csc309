@@ -54,12 +54,19 @@
 				exit();
 			}
 
-			//add the tag to the community endorsement table
+			//check for existing entries
 			$commid = $_POST["commid"];
-			$ins = "insert into communityendorsement values ($1, $2)";
-			pg_prepare($dbconn, "ins", $ins);
-			pg_execute($dbconn, "ins", array($commid, $pid));
-			
+			$checkexist = "select count(*) from communityendorsement where commid=$1 and projid=$2";
+			pg_prepare($dbconn, "checkexist", $checkexist);
+			$result = pg_execute($dbconn, "checkexist", array($commid, $pid));
+			$row = pg_fetch_row($result);
+			if($row[0] == 0)
+			{
+				//add the tag to the community endorsement table
+				$ins = "insert into communityendorsement values ($1, $2)";
+				pg_prepare($dbconn, "ins", $ins);
+				pg_execute($dbconn, "ins", array($commid, $pid));
+			}
 			//get the new list of tags associated with the project to return by ajax
 			$currentTags = "select description from communityendorsement natural join community where projid=$1";
 			pg_prepare($dbconn, "currentTags", $currentTags);
