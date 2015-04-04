@@ -23,7 +23,7 @@
     <link href="assets/css/explore.css" rel="stylesheet">       
     
     <!-- Main Jquery & Hover Effects. Should load first -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="assets/js/hover_pack.js"></script>
     
 
