@@ -12,6 +12,12 @@ drop table if exists rating cascade;
 drop table if exists session cascade;
 drop table if exists userrating cascade;
 drop table if exists comment cascade;
+ drop sequence project_projid_seq;
+ drop sequence community_commid_seq;
+ drop sequence funder_fundid_seq;
+ drop sequence rating_rid_seq;
+ drop sequence userrating_urid_seq;
+ drop sequence comment_cid_seq;
 
 ----------------------------------------------------------------------
 -------------users table--------------------------------------------
@@ -27,21 +33,6 @@ CREATE TABLE users
 	admin integer NOT NULL
 );
 ALTER TABLE ONLY users ADD CONSTRAINT users_pkey PRIMARY KEY (email);
-
-
-----------------------------------------------------------------------
--------------personalintersts table-----------------------------------
-----------------------------------------------------------------------
-CREATE TABLE personalinterests 
-(
-    email character varying(40) NOT NULL,
-    commid integer NOT NULL
-);
-ALTER TABLE ONLY personalinterests ADD CONSTRAINT personalinterests_pkey PRIMARY KEY (email, commid);
-ALTER TABLE ONLY personalinterests
-    ADD CONSTRAINT personalinterests_email_fkey FOREIGN KEY (email) REFERENCES users(email);
-ALTER TABLE ONLY personalinterests
-    ADD CONSTRAINT personalinterests_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
 
 ----------------------------------------------------------------------
 -------------project table--------------------------------------------
@@ -59,7 +50,7 @@ CREATE TABLE project
     rating double precision NOT NULL,
 	longdesc character varying(1000)
 );
-CREATE SEQUENCE projidroject_projid_seq
+CREATE SEQUENCE project_projid_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -88,6 +79,20 @@ SELECT pg_catalog.setval('community_commid_seq', 7, false);
 ALTER TABLE ONLY community ADD CONSTRAINT community_pkey PRIMARY KEY (commid);
 
 ----------------------------------------------------------------------
+-------------personalintersts table-----------------------------------
+----------------------------------------------------------------------
+CREATE TABLE personalinterests 
+(
+    email character varying(40) NOT NULL,
+    commid integer NOT NULL
+);
+ALTER TABLE ONLY personalinterests ADD CONSTRAINT personalinterests_pkey PRIMARY KEY (email, commid);
+ALTER TABLE ONLY personalinterests
+    ADD CONSTRAINT personalinterests_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE ONLY personalinterests
+    ADD CONSTRAINT personalinterests_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
+
+----------------------------------------------------------------------
 -------------communityendorsement table--------------------------------------------
 ----------------------------------------------------------------------
 CREATE TABLE communityendorsement 
@@ -100,7 +105,6 @@ ALTER TABLE ONLY communityendorsement
     ADD CONSTRAINT communityendorsement_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
 ALTER TABLE ONLY communityendorsement
     ADD CONSTRAINT communityendorsement_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
-
 
 ----------------------------------------------------------------------
 -------------initiator table--------------------------------------------
