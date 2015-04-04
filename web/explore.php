@@ -130,8 +130,8 @@
 					<div class="row mt">
 					<?php
 						//for now just pull any project in the backend to display
-						$featured = "select projid, goalamount, curramount, startdate, enddate, t1.description, location, popularity, rating, longdesc, community.description from 
-							(select * from project natural join communityendorsement order by rating desc limit 6) t1, community where community.commid=t1.commid;";
+						$featured = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description from 
+							(select * from project natural join communityendorsement natural join location order by rating desc limit 6) t1, community where community.commid=t1.commid;";
 						pg_prepare($dbconn, "featured", $featured);
 						$result = pg_execute($dbconn, "featured", array());
 						while ($row = pg_fetch_row($result)) {
