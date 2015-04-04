@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<?php
-	session_start();
-?>
-
 <html>
 	<head>
 		<!-- Latest compiled and minified CSS -->
@@ -19,34 +15,7 @@
 
 	<body>
 		<?php
-			date_default_timezone_set("America/Toronto");
-			$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
-
-			$email = $_SESSION["email"]; //email is stored in the php session
-			$sessid = $_GET["sessid"];
-	
-			//check if session id is real or faked
-			$validnum = "select count(*) from session where sessionid=$1";
-			pg_prepare($dbconn, "validnum", $validnum);
-			$result = pg_execute($dbconn, "validnum", array($sessid));
-			$row = pg_fetch_row($result);
-			if($row[0] == 0)
-			{
-				echo "Please login again"; //do not give hints about the failed login
-				exit();
-			}
-
-			//check if the valid session id # is expired or not
-			$expiry = "select expiration from session where sessionid=$1";
-			pg_prepare($dbconn, "expiry", $expiry);
-			$result = pg_execute($dbconn, "expiry", array($sessid));
-			$row = pg_fetch_row($result);
-			$dbdate = new DateTime($row[0]);
-			if($dbdate < new DateTime())
-			{
-				echo "Please login again";
-				exit();
-			}
+			include("backend/checksession.php");
 
 			//prevent Andy's style of cheating the system
 			if($_SESSION["admin"] == 0)
@@ -123,6 +92,14 @@
 			$users = "select email, fname, lname from users";
 			pg_prepare($dbconn, "users", $users);
 			$list = pg_execute($dbconn, "users", array());
+			
+			//variables to setup unique query names			
+			$avg = "avg";
+			$allproj = "allproj";
+			$currproj = "currproj";
+			$donecurr = "donecurr";
+			$doneexp = "doneexp";
+			$i = 0;
 			while($ustat = pg_fetch_row($list))
 			{
 				$sfname = $ustat[1];
@@ -135,9 +112,9 @@
 						<td><?php echo $sfname?>'s Average Donation</td>
 					<td>
 					<?php
-						$avg = "select avg(amount) from funder where email=$1";
-						pg_prepare($dbconn, "avg", $avg);
-						$result = pg_execute($dbconn, "avg", array($semail));
+						${$avg.$i} = "select avg(amount) from funder where email=$1";
+						pg_prepare($dbconn, "avg".$i, ${$avg.$i});
+						$result = pg_execute($dbconn, "avg".$i, array($semail));
 						$row = pg_fetch_row($result);
 						if($row[0] == 0.0)
 						{
@@ -154,9 +131,9 @@
 						<td><b>Total Lifetime Projects</b></td>
 						<td>
 						<?php
-							$allproj = "select count(*) from project natural join initiator where email=$1";
-							pg_prepare($dbconn, "allproj", $allproj);
-							$result = pg_execute($dbconn, "allproj", array($semail));
+							${$allproj.$i} = "select count(*) from project natural join initiator where email=$1";
+							pg_prepare($dbconn, "allproj".$i, ${$allproj.$i});
+							$result = pg_execute($dbconn, "allproj".$i, array($semail));
 							$row = pg_fetch_row($result);
 							$stotal = $row[0];
 							if($stotal > 0)
@@ -174,9 +151,9 @@
 						<td>Ongoing Projects</td>
 						<td>
 						<?php
-							$currproj = "select count(*) from project natural join initiator where email=$1 and enddate > current_timestamp";
-							pg_prepare($dbconn, "currproj", $currproj);
-							$result = pg_execute($dbconn, "currproj", array($semail));
+							${$currproj.$i} = "select count(*) from project natural join initiator where email=$1 and enddate > current_timestamp";
+							pg_prepare($dbconn, "currproj".$i, ${$currproj.$i});
+							$result = pg_execute($dbconn, "currproj".$i, array($semail));
 							$row = pg_fetch_row($result);
 							$songoing = $row[0];
 							if($songoing > 0)
@@ -212,9 +189,9 @@
 						<td>Completed But Still Ongoing Projects</td>
 						<td>
 						<?php
-							$donecurr = "select count(*) from project natural join initiator where  email=$1 and curramount >= goalamount and enddate <= current_timestamp;";
-							pg_prepare($dbconn, "donecurr", $donecurr);
-							$result = pg_execute($dbconn, "donecurr", array($semail));
+							${$donecurr.$i} = "select count(*) from project natural join initiator where  email=$1 and curramount >= goalamount and enddate <= current_timestamp;";
+							pg_prepare($dbconn, "donecurr".$i, ${$donecurr.$i});
+							$result = pg_execute($dbconn, "donecurr".$i, array($semail));
 							$row = pg_fetch_row($result);
 							if($row[0] > 0)
 							{
@@ -232,9 +209,9 @@
 						<td>Completed But Expired Projects</td>
 						<td>
 						<?php
-							$doneexp = "select count(*) from project natural join initiator where  email=$1 and curramount >= goalamount and enddate > current_timestamp;";
-							pg_prepare($dbconn, "doneexp", $doneexp);
-							$result = pg_execute($dbconn, "doneexp", array($semail));
+							${$doneexp.$i} = "select count(*) from project natural join initiator where  email=$1 and curramount >= goalamount and enddate > current_timestamp;";
+							pg_prepare($dbconn, "doneexp".$i, ${$doneexp.$i});
+							$result = pg_execute($dbconn, "doneexp".$i, array($semail));
 							$row = pg_fetch_row($result);
 							if($row[0] > 0)
 							{
@@ -249,7 +226,9 @@
 						</td>
 					</tr>
 				</table>
-			<?php }?>
+			<?php 
+				$i++;
+				}?>
 		</div>
 	<body>
 </html>
