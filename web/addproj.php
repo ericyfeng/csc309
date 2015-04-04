@@ -1,9 +1,7 @@
-<!DOCTYPE html>
+
 <?php
-_
-	include("backend/checksession.php");
-
-
+	session_start();
+	$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
 	//retrieve the information from the form entry fields about the new project
 	$goalamount = $_POST["goalamount"];
 	$email = $_SESSION["email"];
