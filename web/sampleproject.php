@@ -1,61 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="assets/ico/favicon.png">
-
+  	<?php  
+  		session_start();
+  		include("template/head.php"); 
+  	?>
     <title>sample project</title>
 
-    <link href="assets/css/hover_pack.css" rel="stylesheet">
-
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
-    <link href="assets/css/main.css" rel="stylesheet">
-    <link href="assets/css/colors/color-74c9be.css" rel="stylesheet">   
     <link href="assets/css/project.css" rel="stylesheet"> 
-    <link href="assets/css/animations.css" rel="stylesheet">
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-    
-    
-    <!-- Main Jquery & Hover Effects. Should load first -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="assets/js/hover_pack.js"></script>
+
+   
   </head>
 
   <body>
 	<! ========== NAV BAR ==================================================================================================== 
 	=============================================================================================================================>
 
-    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-        <div class="container topnav">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a class="navbar-brand topnav" href="index.php">HOME</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="explore.php">Explore</a>
-                    </li>
-                    <li>
-                        <a href="#signup" data-toggle="modal">Sign up</a>
-                    </li>
-                    <li>
-                        <a href="#login" data-toggle="modal">Login</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+	<?php
+		//enable php debugging
+		if($_SESSION["loggedin"] == 1)
+		{
+			include("template/loginnav.php");
+			//include("template/navbar.php");
+		}
+		else
+		{
+			include("template/navbar.php");
+		}
+	?>
 
 	<! ========== MAIN ======================================================================================================== 
 	=============================================================================================================================> 

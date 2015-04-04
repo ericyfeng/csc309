@@ -65,11 +65,11 @@
     </nav>
 
 	<!--Surround the body in its own container-->
-
+	<div class="container-fliud">
 		<!--Everything in the body will be in a single row-->
 		<div class="row">
 			<!--The left column is just has the mort text-->
-			<div class="col-md-2">
+			<div class="col-sm-2">
 				<div id="menu">
 					<div class="container-fliud pull-right">
 						<ul class="nav">
@@ -167,7 +167,7 @@
 				</div><!-- /container -->
 			</div> <!-- col-md-8 -->
 		</div><!-- body row -->
-
+	</div> <!-- container-fliud -->
 
 
 	<! ========== CALL TO ACTION BAR =============================================================================================== 
