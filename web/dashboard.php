@@ -166,7 +166,7 @@
 						</thead>
 
 					<?php
-					$others = "select distinct projid, description, enddate, location from initiator natural join project where (projid) not in (select projid from initiator where email=$1)";
+					$others = "select distinct projid, description, enddate, locname from initiator natural join project natural join location where (projid) not in (select projid from initiator where email=$1)";
 					pg_prepare($dbconn, "others", $others);
 					$result = pg_execute($dbconn, "others", array($email));
 					$iteration = 0; //needed to create unique variable names for the while loop of prepared statements

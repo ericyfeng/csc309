@@ -98,7 +98,7 @@
 
 		//FINALL the session id is real, it isn't expired, and this person is an initiator of the project
 		//	let's get on with the show
-		$summary = "select * from project where projid=$1";
+		$summary = "select * from project natural join location where projid=$1";
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
 		$row = pg_fetch_row($result);
@@ -188,7 +188,7 @@
 		</div>
 
 		<div class="container">
-			<h3><b><?php echo "$row[5]"?></b></h3>
+			<h3><b><?php echo "$row[6]"?></b></h3>
 
 			<!--Project tags-->
 			<ul class="list-inline" id="tags">
@@ -207,23 +207,23 @@
 			<table class="table table-striped table-bordered">
 				<tr>
 					<td><b>Starting Date:</b></td>
-					<td><?php echo "$row[3]"?></td>
-				</tr>
-				<tr>
-					<td><b>End Date:</b></td>
 					<td><?php echo "$row[4]"?></td>
 				</tr>
 				<tr>
+					<td><b>End Date:</b></td>
+					<td><?php echo "$row[5]"?></td>
+				</tr>
+				<tr>
 					<td><b>Location:</b></td>
-					<td><?php echo "$row[6]"?></td>
+					<td><?php echo "$row[10]"?></td>
 				</tr>
 				<tr>
 					<td><b>Current Fudning:</b></td>
-					<td>$<?php echo "$row[2]"?></span></td>
+					<td>$<?php echo "$row[3]"?></span></td>
 				</tr>
 				<tr>
 					<td><b>Target Fuding:</b></td>
-					<td>$<?php echo "$row[1]"?></td>
+					<td>$<?php echo "$row[2]"?></td>
 				</tr>
 				<tr>
 					<td><b>Community Rating:</b></td>

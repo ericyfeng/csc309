@@ -162,7 +162,20 @@
 					</tr>
 					<tr>
 						<td>Location:</td>
-						<td><input type="text" name="location" required></input></td>
+						<td>
+							<select id="locid" name="locid" required>
+							<?php
+								$locs = "select * from location";
+								pg_prepare($dbconn, "locs", $locs);
+								$result = pg_execute($dbconn, "locs", array());
+								while($row = pg_fetch_row($result))
+								{?>
+									<option value="<?php echo $row[0]?>"><?php echo $row[1]?></option>
+								<?php
+								}
+							?>
+							</select>
+						</td>
 					</tr>
 
 					<!--The long description is a text box input area to make it convenient for the user-->

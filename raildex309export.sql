@@ -12,12 +12,36 @@ drop table if exists rating cascade;
 drop table if exists session cascade;
 drop table if exists userrating cascade;
 drop table if exists comment cascade;
- drop sequence project_projid_seq;
- drop sequence community_commid_seq;
- drop sequence funder_fundid_seq;
- drop sequence rating_rid_seq;
- drop sequence userrating_urid_seq;
- drop sequence comment_cid_seq;
+drop table if exists location cascade;
+drop table if exists commcomment cascade;
+drop table if exists loccomment cascade; 
+drop sequence project_projid_seq;
+drop sequence community_commid_seq;
+drop sequence funder_fundid_seq;
+drop sequence rating_rid_seq;
+drop sequence userrating_urid_seq;
+drop sequence comment_cid_seq;
+drop sequence location_locid_seq;
+drop sequence commcomment_ccid_seq;
+drop sequence loccomment_lcid_seq;
+
+----------------------------------------------------------------------
+-------------location table--------------------------------------------
+----------------------------------------------------------------------
+CREATE TABLE location (
+    locid integer NOT NULL,
+    locname character varying(100)
+);
+CREATE SEQUENCE location_locid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY location ALTER COLUMN locid SET DEFAULT nextval('location_locid_seq'::regclass);
+SELECT pg_catalog.setval('location_locid_seq', 4, false);
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (locid);
 
 ----------------------------------------------------------------------
 -------------users table--------------------------------------------
@@ -35,6 +59,54 @@ CREATE TABLE users
 ALTER TABLE ONLY users ADD CONSTRAINT users_pkey PRIMARY KEY (email);
 
 ----------------------------------------------------------------------
+-------------location comment table-----------------------------------
+----------------------------------------------------------------------
+CREATE TABLE loccomment (
+    lcid integer NOT NULL,
+    locid integer,
+    email character varying(40),
+    comment character varying(160)
+);
+CREATE SEQUENCE loccomment_lcid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY loccomment ALTER COLUMN lcid SET DEFAULT nextval('loccomment_lcid_seq'::regclass);
+SELECT pg_catalog.setval('loccomment_lcid_seq', 1, false);
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_pkey PRIMARY KEY (lcid);
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_locid_fkey FOREIGN KEY (locid) REFERENCES location(locid);
+
+----------------------------------------------------------------------
+-------------community comment table----------------------------------
+----------------------------------------------------------------------
+CREATE TABLE commcomment (
+    ccid integer NOT NULL,
+    commid integer,
+    email character varying(40),
+    comment character varying(160)
+);
+CREATE SEQUENCE commcomment_ccid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY commcomment ALTER COLUMN ccid SET DEFAULT nextval('commcomment_ccid_seq'::regclass);
+SELECT pg_catalog.setval('commcomment_ccid_seq', 1, false);
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_pkey PRIMARY KEY (ccid);
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+----------------------------------------------------------------------
 -------------project table--------------------------------------------
 ----------------------------------------------------------------------
 CREATE TABLE project 
@@ -45,7 +117,7 @@ CREATE TABLE project
     startdate date NOT NULL,
     enddate date NOT NULL,
     description character varying(100),
-    location character varying(40) NOT NULL,
+    locid integer NOT NULL,
     popularity integer NOT NULL,
     rating double precision NOT NULL,
 	longdesc character varying(1000)
@@ -59,6 +131,8 @@ CREATE SEQUENCE project_projid_seq
 ALTER TABLE ONLY project ALTER COLUMN projid SET DEFAULT nextval('project_projid_seq'::regclass);
 SELECT pg_catalog.setval('project_projid_seq', 3, false);
 ALTER TABLE ONLY project ADD CONSTRAINT project_pkey PRIMARY KEY (projid);
+ALTER TABLE ONLY project
+    ADD CONSTRAINT project_locid_fkey FOREIGN KEY (locid) REFERENCES location(locid);
 
 ----------------------------------------------------------------------
 -------------community table--------------------------------------------
@@ -250,6 +324,12 @@ legends@raildex.tv	Ruiko	Saten	superstition	0	0
 root@admin.com	Absolute	Authority	toor	1000	1
 \.
 
+COPY location (locid, locname) FROM stdin;
+1	Academy City
+2	Ontario
+3	Quebec
+\.
+
 COPY community (commid, description) FROM stdin;
 1	Magic
 2	Cat care
@@ -267,9 +347,9 @@ libprohibited@raildex.tv	3
 zapper@raildex.tv	4
 \.
 
-COPY project (projid, goalamount, curramount, startdate, enddate, description, location, popularity, rating, longdesc) FROM stdin;
-1	500	70	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	Toumas City	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
-2	50000	10000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	Academy City	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
+COPY project (projid, goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc) FROM stdin;
+1	500	70	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	1	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
+2	50000	10000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	1	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
 \.
 
 
