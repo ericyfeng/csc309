@@ -21,36 +21,20 @@
 
 		<script>
 		//performs the filtering of other peoples's projects when you click the red filter by tag button
-		function filtertags()
+		function filtertags(comm_requested)
 		{
-			var tags = document.getElementsByClassName("tagtoggle");
-			var i;
-			//2 for loops to account for a project that could have multiple tags.
-			//this way if you don't wanna see a project with a certain tag it will for sure be removed
-			//	irregardless of whatever other tags it has
-			for(i=0; i<tags.length; i++)
+
+			var blacklist = document.getElementsByClassName("commgeneric");
+			var j;
+			for(j=0; j<blacklist.length; j++)
 			{
-				if(tags[i].checked)
-				{
-					var fixlist = document.getElementsByClassName(tags[i].id);
-					var j;
-					for(j=0; j<fixlist.length; j++)
-					{
-						fixlist[j].style.display = "table-row";
-					}
-				}
+				blacklist[j].style.display = "none";
 			}
-			for(i=0; i<tags.length; i++)
+			
+			var fixlist = document.getElementsByClassName(comm_requested);
+			for(j=0; j<fixlist.length; j++)
 			{
-				if(!tags[i].checked)
-				{
-					var blacklist = document.getElementsByClassName(tags[i].id);
-					var j;
-					for(j=0; j<blacklist.length; j++)
-					{
-						blacklist[j].style.display = "none";
-					}
-				}
+				fixlist[j].style.display = "table-row";
 			}
 		}
 
@@ -109,8 +93,8 @@
 			<!--The left column for filtering projects by their community endorsement-->
 			<div class="row">
 				<div class="col-sm-2">
-					<button type="button" class="glyphicon glyphicon-tag btn btn-danger" onclick="filtertags()"> Filter by tag</button>
-					<ul>
+					<br><br>
+						<button type="button" class= "btn btn-danger glyphicon glyphicon-tag" onclick="filtertags('commgeneric')"> All</button><br>
 					<?php
 						//get a list of all communities and make a checkbox for each one with the appropriate attributes
 						$lscomm = "select * from community";
@@ -118,10 +102,12 @@
 						$result4 = pg_execute($dbconn, "lscomm", array());
 						while($row4 = pg_fetch_row($result4))
 						{
-							echo "<li><input class=\"tagtoggle\" type=\"checkbox\" id=\"comm$row4[0]\" checked=\"yes\"> $row4[1]</input></li>";
+							echo "<button type=\"button\" class=\"btn btn-danger glyphicon glyphicon-tag\" onclick=\"filtertags('comm$row4[0]')\">
+								$row4[1]
+								</button>";
 						}
 					?>
-					</ul>
+
 				</div>
 
 				<!--The main right column for seeing your own projects as well as other peoples's projects-->
@@ -209,6 +195,7 @@
 							$tagstring = $tagstring . "comm" . $row2[0] . " ";
 						}
 						$iteration++;
+						$tagstring = $tagstring . " commgeneric";
 					?>
 						<tr class="<?php echo $tagstring?>" id="p_<?php echo $row[0]?>">
 							<td><a href="overview.php?p=<?php echo $row[0]?>&sessid=<?php echo $sessid?>"> <?php echo $row[1]?></a><br></td>
