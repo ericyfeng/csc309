@@ -51,8 +51,7 @@
 			$_SESSION["admin"] = $row[2];
 			$_SESSION["sessid"] = $rand;
 			//redirect user to dashboard on successful login
-			
-			header("Location: ../dashboard.php");
+			echo "2";
 			exit();
 		}
 		else

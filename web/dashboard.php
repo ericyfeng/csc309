@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <?php
-	session_start();
+	include("backend/checksession.php");
+		//the session has not expired yet, get the user variables for printing
+	$fname = $_SESSION["fname"];
+	$lname = $_SESSION["lname"];
 ?>
 
 <html>
@@ -66,43 +69,6 @@
 	</head>
 
 	<body>
-	<?php
-		//enable php debugging
-		error_reporting(E_ALL);
-		ini_set('display_errors', 1);
-		date_default_timezone_set('America/Toronto');
-		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
-
-		//check if session id is real or faked
-		$sessid = $_SESSION["sessid"];
-		$validnum = "select count(*) from session where sessionid=$1";
-		pg_prepare($dbconn, "validnum", $validnum);
-		$result = pg_execute($dbconn, "validnum", array($sessid));
-		$row = pg_fetch_row($result);
-		if($row[0] == 0)
-		{
-			echo "Please login again"; //do not give hints about the failed login
-			exit();
-		}
-
-		//check if the valid session id # is expired or not
-		$expiry = "select expiration from session where sessionid=$1";
-		pg_prepare($dbconn, "expiry", $expiry);
-		$result = pg_execute($dbconn, "expiry", array($sessid));
-		$row = pg_fetch_row($result);
-		$dbdate = new DateTime($row[0]);
-			
-		if($dbdate < new DateTime())
-		{
-			echo "Please login again";
-			exit();
-		}
-
-		//the session has not expired yet, get the user variables for printing
-		$fname = $_SESSION["fname"];
-		$lname = $_SESSION["lname"];
-		$email = $_SESSION["email"];
-		?>
 
 		<!--Black nav bar-->
 		<nav class="navbar navbar-inverse">
@@ -122,11 +88,11 @@
 					</a>
 					<?php }?>
 					<!--New project button-->
-					<a href="newproject.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-success">
+					<a href="newproject.php" class="navbar-btn btn btn-success">
 						<span class="glyphicon glyphicon-asterisk"></span> New Project
 					</a>
 					<!--My profile button-->
-					<a href="profile.php?sessid=<?php echo $sessid?>" class="navbar-btn btn btn-primary">
+					<a href="profile.php" class="navbar-btn btn btn-primary">
 						<span class="glyphicon glyphicon-user"></span> My Profile
 					</a>
 							
@@ -174,9 +140,9 @@
 
 					<!--PHP to fetch the user's projects 1 by 1 and create the corresponding rows-->
 					<?php
-					$myproj = "select description, curramount, goalamount, projid from initiator natural join project where email=$1";
+					$myproj = "select description, curramount, goalamount, projid, email from initiator natural join project where email=(select email from session where sessionid=$1)";
 					pg_prepare($dbconn, "myproj", $myproj);
-					$result = pg_execute($dbconn, "myproj", array($email));
+					$result = pg_execute($dbconn, "myproj", array($sessid));
 
 					//create a new table entry for each of the user's projects
 					while($row = pg_fetch_row($result))
@@ -191,7 +157,9 @@
 								<td>\$$goalamount</td>
 								<td><button class=\"btn btn-danger glyphicon glyphicon-remove\" onclick=\"rm('p_$row[3]', '$sessid')\"></button></td>
 							</tr>";
-					}?>
+					}
+					$email = $row[4];
+					?>
 
 					<!--Display other peoples's projects-->
 					</table>			
