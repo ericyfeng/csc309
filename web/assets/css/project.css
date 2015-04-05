@@ -21,3 +21,7 @@ a:focus {
     text-decoration: none;
     outline: 0;
 }
+
+.rate {
+	margin-top: -20px;
+}

@@ -70,7 +70,7 @@
 					<div class="container-fliud pull-right">
 						<ul class="nav">
 							<li>Categories</li>
-								<li><a onclick="filtertags('commgeneric')">ALL</a></li>
+								<li><a href="#" onclick="filtertags('commgeneric')">ALL</a></li>
 								<?php
 									//for now just pull any project in the backend to display
 									$categories = "select * from community;";
@@ -78,7 +78,7 @@
 									$result = pg_execute($dbconn, "cat", array());
 									while ($row = pg_fetch_row($result)) {
 								?>						
-								<li><a onclick="filtertags('<?php echo 'comm'.$row[0]?>')"> <?= $row[1] ?></a></li>
+								<li><a href="#" onclick="filtertags('<?php echo 'comm'.$row[0]?>')"> <?= $row[1] ?></a></li>
 								<?php
 									}
 								?>								
@@ -150,8 +150,9 @@
 							$today = new DateTime(date("Y-m-d"));
 							$remaining = date_diff($today, $enddate) ;
 						?>
+
 						<div class="<?= $tagstring ?>">
-							<a class="b-link-fade b-animate-go" href="#"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row[0]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
 								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row["description"] ?></h4>
 								  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>

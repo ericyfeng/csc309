@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  	<?php  
-  		session_start();
+  	<?php
   		include("template/head.php"); 
+		error_reporting(E_ALL);
+		ini_set('display_errors', 1);
+		date_default_timezone_set('America/Toronto');  
+  		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
+  		$projid = $_GET["projid"];
+  		$project = "select projid, goalamount, curramount, startdate, enddate, t1.description as title, locname, popularity, rating, longdesc, community.description, fname, lname, reputation from 
+							(select * from project natural join communityendorsement natural join location natural join initiator natural join users where projid=$1) t1, community where community.commid=t1.commid;";
+
+  		pg_prepare($dbconn, "project", $project);
+  		$result = pg_execute($dbconn, "project", array($projid));
+  		$row = pg_fetch_array($result);
+
   	?>
-    <title>sample project</title>
+    <title><?php echo $row["title"] ?></title>
 
     <!-- Custom styles for this template -->
     <link href="assets/css/project.css" rel="stylesheet"> 
@@ -35,8 +46,8 @@
 
 	<div class="container">
 		<div class="row centered">
-			<div class="col-lg-4 col-lg-offset-4">
-				<h1>Project Name</h1>
+			<div class="col-sm-8 col-sm-offset-2">
+				<h1><?php echo $row["title"] ?></h1>
 				<hr>
 			</div>
 		</div><!-- /row -->
@@ -44,37 +55,76 @@
 		<div class="row">
 			<div class="col-lg-8 col-md-8 col-xs-12">
 				<iframe width="720" height="483" src="https://www.youtube.com/embed/BEtIoGQxqQs" frameborder="0" allowfullscreen></iframe>
-				<p>This is a brief paragraph about this project. Filler message starts here: if you really read this, you will soon realize that this is all a waste of time. as you keep reading we can tell that you really have too much time on your hand for reading this long paragraph for no reason. Are you really still reading this? Good for you.</p>
 			</div>
 			<div class="col-lg-4 col-md-4 col-xs-12">
 				<div class="container-fliud project-info">
 					<div class="current-balance">
-						<h3>$6,530,410 USD</h3>
-						<p class="lead">Raised of $10,884,016 Goal</p>			
+						<h3>$<?php echo $row["curramount"] ?></h3>
+						<p class="lead">Raised of <?php echo $row["goalamount"] ?> Goal</p>			
 					</div>						
 					<div class="progress">
-	  					<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-	    				60%
-	 					</div>
+						<?php 
+							$progress = round(($row["curramount"] / $row["goalamount"]), 2) * 100;
+							$enddate = new DateTime($row["enddate"]);
+							$today = new DateTime(date("Y-m-d"));
+							$remaining = date_diff($today, $enddate) ;
+						?>
+						<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+			    				<?= $progress ?>%
+			 			</div>
 					</div>									
 					<div class="remain-time">
-						<p class="lead"><i class="fa fa-clock-o"></i> 10 Days Left</p>
+						<p class="lead"><i class="fa fa-clock-o"></i> <?php echo $remaining->days ?>  Days Left</p>
 					</div>
-					<p class="lead"><i class="fa fa-user"></i> 420 Funders</p>
+					<p class="lead"><i class="fa fa-user"></i> 420 Funders (needs implementation)</p>
 					<div class="tags">		
-						<p class="lead"><i class="fa fa-tag"></i> Technology</p>
-						<p class="lead"><i class="fa fa-map-marker"></i> Toronto, Ontario</p>
+						<p class="lead"><i class="fa fa-tag"></i> <?php echo $row["description"] ?></p>
+						<p class="lead"><i class="fa fa-map-marker"></i> <?php echo $row["locname"] ?></p>
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="USD">
-						<button type="button sub" class="btn btn-danger btn-lg btn-block">Fund the project!</button>
+						<input type="text" class="form-control">
+						<button type="sub" class="btn btn-danger btn-lg btn-block">Fund the project!</button>
 						</div>	    	
 
 					<div class="p-initiator">
 						<h4>Initiated by: </h4>
 						<a href="#">
-							<p class="lead"><i class="fa fa-rocket"></i> James Cameron (4.7)</p>
+							<p class="lead"><i class="fa fa-rocket"></i> <?php echo $row["fname"] . " " . $row["lname"] ." (" . $row["reputation"] . ")" ;?></p>
 						</a>
+					</div>
+
+					<div class="form-group">
+						<h4>Rate initiator:</h4>
+						<select class="form-control" id="reputation" name="reputation">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+						<button class="btn-theme">submit</button>
+					</div>
+
+					<div class="form-group">
+						<h4 class="rate">Rate Project:</h4>
+						<select class="form-control" id="projrate" name="projrate">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+						<button class="btn-theme">submit</button>
 					</div>
 
 				</div>
@@ -84,7 +134,7 @@
 
 		<div class="row">
 			<h2>MORE ABOUT PROJECT</h2>
-			<p>Detailed explanation about project.</p>
+			<p><?php echo $row["longdesc"] ?></p>
 		</div>
 
 	</div>

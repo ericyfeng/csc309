@@ -114,10 +114,10 @@
 							$remaining = date_diff($today, $enddate) ;
 						?>
 						<div class="col-lg-4 col-md-4 col-xs-12 desc">
-							<a class="b-link-fade b-animate-go" href="#"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row[0]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
 								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row[5] ?></h4>
-								  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>
+								  	<p class="b-from-right b-animate b-delay03">Read More.</p>
 								</div>
 							</a>
 							<p><?= $row[5] ?></p>
