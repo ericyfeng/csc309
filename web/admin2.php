@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+	session_start();
+?>
 <html>
 	<head>
 		<!-- Latest compiled and minified CSS -->
