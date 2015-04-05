@@ -29,7 +29,7 @@
 		<!--The main form for new project information-->
 		<div class="container">
 			<h1>Create a New Project</h1>
-			<form action="addproj.php" onsubmit="return validate()" method="POST">
+			<form action="backend/addproj.php" onsubmit="return validate()" method="POST">
 				<table class="table table-bordered table-striped">
 					<tr>
 						<td>Title:</td>
@@ -100,6 +100,15 @@
 					<tr>
 						<td>Description:</td>
 						<td><textarea name="longdesc" required></textarea></td>
+					</tr>
+
+					<tr>
+						<td>Video Description</td>
+						<td><input type="text" class="form-control" name="video"></input></td>
+					</tr>	
+					<tr>
+						<td>Image URL</td>
+						<td><input type="text" class="form-control" name="picture"></input></td>
 					</tr>					
 				</table>
 				<input type="submit" class="btn-theme"value="Let's do it!"></input>

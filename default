@@ -1,0 +1,910 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: admin; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE admin (
+    adminusername character varying(40) NOT NULL,
+    password character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.admin OWNER TO "Daniel";
+
+--
+-- Name: commcomment_ccid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE commcomment_ccid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.commcomment_ccid_seq OWNER TO "Daniel";
+
+--
+-- Name: commcomment; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE commcomment (
+    ccid integer DEFAULT nextval('commcomment_ccid_seq'::regclass) NOT NULL,
+    commid integer,
+    email character varying(40),
+    comment character varying(160)
+);
+
+
+ALTER TABLE public.commcomment OWNER TO "Daniel";
+
+--
+-- Name: comment_cid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE comment_cid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.comment_cid_seq OWNER TO "Daniel";
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE comment (
+    cid integer DEFAULT nextval('comment_cid_seq'::regclass) NOT NULL,
+    projid integer NOT NULL,
+    email character varying(40) NOT NULL,
+    comment character varying(300) NOT NULL
+);
+
+
+ALTER TABLE public.comment OWNER TO "Daniel";
+
+--
+-- Name: community_commid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE community_commid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.community_commid_seq OWNER TO "Daniel";
+
+--
+-- Name: community; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE community (
+    commid integer DEFAULT nextval('community_commid_seq'::regclass) NOT NULL,
+    description character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.community OWNER TO "Daniel";
+
+--
+-- Name: communityendorsement; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE communityendorsement (
+    commid integer NOT NULL,
+    projid integer NOT NULL
+);
+
+
+ALTER TABLE public.communityendorsement OWNER TO "Daniel";
+
+--
+-- Name: funder_fundid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE funder_fundid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.funder_fundid_seq OWNER TO "Daniel";
+
+--
+-- Name: funder; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE funder (
+    fundid integer DEFAULT nextval('funder_fundid_seq'::regclass) NOT NULL,
+    email character varying(40) NOT NULL,
+    projid integer NOT NULL,
+    datestamp date NOT NULL,
+    amount integer NOT NULL
+);
+
+
+ALTER TABLE public.funder OWNER TO "Daniel";
+
+--
+-- Name: initiator; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE initiator (
+    projid integer NOT NULL,
+    email character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.initiator OWNER TO "Daniel";
+
+--
+-- Name: interests_interestid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE interests_interestid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.interests_interestid_seq OWNER TO "Daniel";
+
+--
+-- Name: location_locid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE location_locid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_locid_seq OWNER TO "Daniel";
+
+--
+-- Name: location; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE location (
+    locid integer DEFAULT nextval('location_locid_seq'::regclass) NOT NULL,
+    locname character varying(100)
+);
+
+
+ALTER TABLE public.location OWNER TO "Daniel";
+
+--
+-- Name: loccomment_lcid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE loccomment_lcid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.loccomment_lcid_seq OWNER TO "Daniel";
+
+--
+-- Name: loccomment; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE loccomment (
+    lcid integer DEFAULT nextval('loccomment_lcid_seq'::regclass) NOT NULL,
+    locid integer,
+    email character varying(40),
+    comment character varying(160)
+);
+
+
+ALTER TABLE public.loccomment OWNER TO "Daniel";
+
+--
+-- Name: personalinterests; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE personalinterests (
+    email character varying(40) NOT NULL,
+    commid integer NOT NULL
+);
+
+
+ALTER TABLE public.personalinterests OWNER TO "Daniel";
+
+--
+-- Name: project_projid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE project_projid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.project_projid_seq OWNER TO "Daniel";
+
+--
+-- Name: project; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE project (
+    projid integer DEFAULT nextval('project_projid_seq'::regclass) NOT NULL,
+    goalamount integer NOT NULL,
+    curramount integer NOT NULL,
+    startdate date NOT NULL,
+    enddate date NOT NULL,
+    description character varying(100),
+    locid integer NOT NULL,
+    popularity integer NOT NULL,
+    rating double precision NOT NULL,
+    longdesc character varying(1000),
+    video character varying(160),
+    picture character varying(500) DEFAULT 'assets/img/portfolio/port04.jpg'::character varying
+);
+
+
+ALTER TABLE public.project OWNER TO "Daniel";
+
+--
+-- Name: rating_rid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE rating_rid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rating_rid_seq OWNER TO "Daniel";
+
+--
+-- Name: rating; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE rating (
+    rid integer DEFAULT nextval('rating_rid_seq'::regclass) NOT NULL,
+    projid integer NOT NULL,
+    email character varying(40),
+    rating integer NOT NULL
+);
+
+
+ALTER TABLE public.rating OWNER TO "Daniel";
+
+--
+-- Name: session; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE session (
+    email character varying(40) NOT NULL,
+    sessionid integer,
+    expiration timestamp without time zone
+);
+
+
+ALTER TABLE public.session OWNER TO "Daniel";
+
+--
+-- Name: userrating_urid_seq; Type: SEQUENCE; Schema: public; Owner: Daniel
+--
+
+CREATE SEQUENCE userrating_urid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.userrating_urid_seq OWNER TO "Daniel";
+
+--
+-- Name: userrating; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE userrating (
+    urid integer DEFAULT nextval('userrating_urid_seq'::regclass) NOT NULL,
+    rater character varying(40) NOT NULL,
+    ratee character varying(40) NOT NULL,
+    urating integer NOT NULL
+);
+
+
+ALTER TABLE public.userrating OWNER TO "Daniel";
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+CREATE TABLE users (
+    email character varying(40) NOT NULL,
+    fname character varying(40) NOT NULL,
+    lname character varying(40) NOT NULL,
+    password character varying(40) NOT NULL,
+    reputation double precision NOT NULL,
+    profession character varying(40),
+    admin integer NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO "Daniel";
+
+--
+-- Data for Name: admin; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY admin (adminusername, password) FROM stdin;
+\.
+
+
+--
+-- Data for Name: commcomment; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY commcomment (ccid, commid, email, comment) FROM stdin;
+1	1	libprohibited@raildex.tv	I know all the secrets there is to magic.
+2	1	right_hand@raildex.tv	Luckily for me I can negate anything funny you try on me :-p
+\.
+
+
+--
+-- Name: commcomment_ccid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('commcomment_ccid_seq', 3, false);
+
+
+--
+-- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY comment (cid, projid, email, comment) FROM stdin;
+1	1	creepo@raildex.tv	It is nice to see my child being so considerate.
+2	2	whitehat@raildex.tv	I would really appreciate not having to sync offline data all the time.
+3	2	legends@raildex.tv	I wont have to waste LTE data anymore looking up more urban legends.
+\.
+
+
+--
+-- Name: comment_cid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('comment_cid_seq', 4, false);
+
+
+--
+-- Data for Name: community; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY community (commid, description) FROM stdin;
+1	Magic
+2	Cat care
+3	Gourmet Eating
+4	Technology
+5	Education
+6	Interior Design
+\.
+
+
+--
+-- Name: community_commid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('community_commid_seq', 7, false);
+
+
+--
+-- Data for Name: communityendorsement; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY communityendorsement (commid, projid) FROM stdin;
+6	1
+4	2
+\.
+
+
+--
+-- Data for Name: funder; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY funder (fundid, email, projid, datestamp, amount) FROM stdin;
+1	libprohibited@raildex.tv	1	2015-02-26	5
+2	creepo@raildex.tv	1	2015-02-22	15
+3	whitehat@raildex.tv	2	2015-02-25	20
+4	legends@raildex.tv	2	2015-03-01	980
+\.
+
+
+--
+-- Name: funder_fundid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('funder_fundid_seq', 5, false);
+
+
+--
+-- Data for Name: initiator; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY initiator (projid, email) FROM stdin;
+1	right_hand@raildex.tv
+2	zapper@raildex.tv
+\.
+
+
+--
+-- Name: interests_interestid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('interests_interestid_seq', 6, false);
+
+
+--
+-- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY location (locid, locname) FROM stdin;
+1	Academy City
+2	Ontario
+3	Quebec
+\.
+
+
+--
+-- Name: location_locid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('location_locid_seq', 4, false);
+
+
+--
+-- Data for Name: loccomment; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY loccomment (lcid, locid, email, comment) FROM stdin;
+1	1	right_hand@raildex.tv	So much bad shit happens here. Who the hell really runs this place?
+2	1	zapper@raildex.tv	I know right? There are some pretty sick minds behind the scenes.
+\.
+
+
+--
+-- Name: loccomment_lcid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('loccomment_lcid_seq', 3, false);
+
+
+--
+-- Data for Name: personalinterests; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY personalinterests (email, commid) FROM stdin;
+right_hand@raildex.tv	1
+right_hand@raildex.tv	2
+libprohibited@raildex.tv	2
+libprohibited@raildex.tv	3
+zapper@raildex.tv	4
+\.
+
+
+--
+-- Data for Name: project; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY project (projid, goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc, video, picture) FROM stdin;
+1	500	70	2015-02-21	2015-06-21	Get a bunk bed for Toumas room	1	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.	https://www.youtube.com/embed/uqEwvVIeFr4	http://www.ikea.com/ms/media/roomsettings/20141/bedroom/20141_bero09a/20141_bero09a_01_PE374761.jpg
+2	50000	10000	2015-02-21	2016-02-21	Make gigabit wifi available citywide	1	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.	https://www.youtube.com/embed/vX7wobS48YA	http://images.atelier.net/sites/default/files/imagecache/scale_crop_587_310/articles/414945/atelier-wifi-signal.png
+\.
+
+
+--
+-- Name: project_projid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('project_projid_seq', 3, false);
+
+
+--
+-- Data for Name: rating; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY rating (rid, projid, email, rating) FROM stdin;
+1	2	whitehat@raildex.tv	10
+\.
+
+
+--
+-- Name: rating_rid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('rating_rid_seq', 2, false);
+
+
+--
+-- Data for Name: session; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY session (email, sessionid, expiration) FROM stdin;
+right_hand@raildex.tv	\N	2020-03-06 19:03:17.433082
+libprohibited@raildex.tv	\N	2000-03-06 19:03:17.433082
+zapper@raildex.tv	\N	2000-03-06 19:03:17.433082
+creepo@raildex.tv	\N	2000-03-06 19:03:17.433082
+whitehat@raildex.tv	\N	2000-03-06 19:03:17.433082
+legends@raildex.tv	\N	2000-03-06 19:03:17.433082
+root@admin.com	\N	2099-03-06 19:03:17.433082
+\.
+
+
+--
+-- Data for Name: userrating; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY userrating (urid, rater, ratee, urating) FROM stdin;
+\.
+
+
+--
+-- Name: userrating_urid_seq; Type: SEQUENCE SET; Schema: public; Owner: Daniel
+--
+
+SELECT pg_catalog.setval('userrating_urid_seq', 1, false);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: Daniel
+--
+
+COPY users (email, fname, lname, password, reputation, profession, admin) FROM stdin;
+right_hand@raildex.tv	Touma	Kamijou	unlucky	0	\N	0
+libprohibited@raildex.tv	Index	Prohibited	feedme	0	\N	0
+zapper@raildex.tv	Mikoto	Misaka	railgun	0	\N	0
+creepo@raildex.tv	Touya	Kamijou	dad	0	\N	0
+whitehat@raildex.tv	Something	Uiharu	flowers	0	\N	0
+legends@raildex.tv	Ruiko	Saten	superstition	0	\N	0
+root@admin.com	Absolute	Authority	toor	1000	\N	1
+\.
+
+
+--
+-- Name: admin_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY admin
+    ADD CONSTRAINT admin_pkey PRIMARY KEY (adminusername);
+
+
+--
+-- Name: commcomment_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_pkey PRIMARY KEY (ccid);
+
+
+--
+-- Name: comment_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (cid);
+
+
+--
+-- Name: community_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY community
+    ADD CONSTRAINT community_pkey PRIMARY KEY (commid);
+
+
+--
+-- Name: communityendorsement_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY communityendorsement
+    ADD CONSTRAINT communityendorsement_pkey PRIMARY KEY (projid, commid);
+
+
+--
+-- Name: funder_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY funder
+    ADD CONSTRAINT funder_pkey PRIMARY KEY (fundid);
+
+
+--
+-- Name: initiator_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY initiator
+    ADD CONSTRAINT initiator_pkey PRIMARY KEY (projid, email);
+
+
+--
+-- Name: location_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (locid);
+
+
+--
+-- Name: loccomment_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_pkey PRIMARY KEY (lcid);
+
+
+--
+-- Name: personalinterests_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY personalinterests
+    ADD CONSTRAINT personalinterests_pkey PRIMARY KEY (email, commid);
+
+
+--
+-- Name: project_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY project
+    ADD CONSTRAINT project_pkey PRIMARY KEY (projid);
+
+
+--
+-- Name: rating_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_pkey PRIMARY KEY (rid);
+
+
+--
+-- Name: session_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (email);
+
+
+--
+-- Name: userrating_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_pkey PRIMARY KEY (urid);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: Daniel; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (email);
+
+
+--
+-- Name: commcomment_commid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
+
+
+--
+-- Name: commcomment_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY commcomment
+    ADD CONSTRAINT commcomment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: comment_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: comment_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
+
+
+--
+-- Name: communityendorsement_commid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY communityendorsement
+    ADD CONSTRAINT communityendorsement_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
+
+
+--
+-- Name: communityendorsement_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY communityendorsement
+    ADD CONSTRAINT communityendorsement_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
+
+
+--
+-- Name: funder_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY funder
+    ADD CONSTRAINT funder_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: funder_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY funder
+    ADD CONSTRAINT funder_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
+
+
+--
+-- Name: initiator_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY initiator
+    ADD CONSTRAINT initiator_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: initiator_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY initiator
+    ADD CONSTRAINT initiator_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
+
+
+--
+-- Name: loccomment_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: loccomment_locid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY loccomment
+    ADD CONSTRAINT loccomment_locid_fkey FOREIGN KEY (locid) REFERENCES location(locid);
+
+
+--
+-- Name: personalinterests_commid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY personalinterests
+    ADD CONSTRAINT personalinterests_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
+
+
+--
+-- Name: personalinterests_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY personalinterests
+    ADD CONSTRAINT personalinterests_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: project_locid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY project
+    ADD CONSTRAINT project_locid_fkey FOREIGN KEY (locid) REFERENCES location(locid);
+
+
+--
+-- Name: rating_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: rating_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
+
+
+--
+-- Name: session_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY session
+    ADD CONSTRAINT session_email_fkey FOREIGN KEY (email) REFERENCES users(email);
+
+
+--
+-- Name: userrating_ratee_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_ratee_fkey FOREIGN KEY (ratee) REFERENCES users(email);
+
+
+--
+-- Name: userrating_rater_fkey; Type: FK CONSTRAINT; Schema: public; Owner: Daniel
+--
+
+ALTER TABLE ONLY userrating
+    ADD CONSTRAINT userrating_rater_fkey FOREIGN KEY (rater) REFERENCES users(email);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

@@ -11,13 +11,19 @@
 	$day = $_POST["day"];
 	$year = $_POST["year"];
 	$longdesc = $_POST["longdesc"];
+	$video = $_POST["video"];
+	$picture = $_POST["picture"];
+	if($picture == NULL)
+	{
+		$picture = 'assets/img/portfolio/port04.jpg';
+	}
 	//merge all the date information into 1 string
 	$date = $year . "-" . $month . "-" . $day;
 		
 	//send project infromation into project table
-	$newproj = "insert into project (goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc) values ($1, 0, $2, $3, $4, $5, 0, 0, $6)";
+	$newproj = "insert into project (goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc, video, picture) values ($1, 0, $2, $3, $4, $5, 0, 0, $6, $7, $8)";
 	pg_prepare($dbconn, "newproj", $newproj);
-	pg_execute($dbconn, "newproj", array($goalamount, date("Y-m-d"), $date, $description, $locid, $longdesc));
+	pg_execute($dbconn, "newproj", array($goalamount, date("Y-m-d"), $date, $description, $locid, $longdesc, $video, $picture));
 
 	//get new project id for setting up initiator
 	$findid = "select projid from project where description=$1";
@@ -32,5 +38,5 @@
 	pg_execute($dbconn, "newinit", array($id, $email));
 
 	//send the person back to the dashboard screen after project creation
-	header("Location: dashboard.php");
+	header("Location: ../dashboard2.php");
 ?>

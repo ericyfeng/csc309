@@ -26,6 +26,24 @@ drop sequence commcomment_ccid_seq;
 drop sequence loccomment_lcid_seq;
 
 ----------------------------------------------------------------------
+-------------community table--------------------------------------------
+----------------------------------------------------------------------
+CREATE TABLE community 
+(
+    commid integer NOT NULL,
+    description character varying(100) NOT NULL
+);
+CREATE SEQUENCE community_commid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE ONLY community ALTER COLUMN commid SET DEFAULT nextval('community_commid_seq'::regclass);
+SELECT pg_catalog.setval('community_commid_seq', 7, false);
+ALTER TABLE ONLY community ADD CONSTRAINT community_pkey PRIMARY KEY (commid);
+
+----------------------------------------------------------------------
 -------------location table--------------------------------------------
 ----------------------------------------------------------------------
 CREATE TABLE location (
@@ -74,7 +92,7 @@ CREATE SEQUENCE loccomment_lcid_seq
     NO MAXVALUE
     CACHE 1;
 ALTER TABLE ONLY loccomment ALTER COLUMN lcid SET DEFAULT nextval('loccomment_lcid_seq'::regclass);
-SELECT pg_catalog.setval('loccomment_lcid_seq', 1, false);
+SELECT pg_catalog.setval('loccomment_lcid_seq', 3, false);
 ALTER TABLE ONLY loccomment
     ADD CONSTRAINT loccomment_pkey PRIMARY KEY (lcid);
 ALTER TABLE ONLY loccomment
@@ -98,7 +116,7 @@ CREATE SEQUENCE commcomment_ccid_seq
     NO MAXVALUE
     CACHE 1;
 ALTER TABLE ONLY commcomment ALTER COLUMN ccid SET DEFAULT nextval('commcomment_ccid_seq'::regclass);
-SELECT pg_catalog.setval('commcomment_ccid_seq', 1, false);
+SELECT pg_catalog.setval('commcomment_ccid_seq', 3, false);
 ALTER TABLE ONLY commcomment
     ADD CONSTRAINT commcomment_pkey PRIMARY KEY (ccid);
 ALTER TABLE ONLY commcomment
@@ -121,7 +139,8 @@ CREATE TABLE project
     popularity integer NOT NULL,
     rating double precision NOT NULL,
 	longdesc character varying(1000),
-	video character varying (160)
+	video character varying (160),
+	picture character varying (500)
 );
 CREATE SEQUENCE project_projid_seq
     START WITH 1
@@ -134,24 +153,6 @@ SELECT pg_catalog.setval('project_projid_seq', 3, false);
 ALTER TABLE ONLY project ADD CONSTRAINT project_pkey PRIMARY KEY (projid);
 ALTER TABLE ONLY project
     ADD CONSTRAINT project_locid_fkey FOREIGN KEY (locid) REFERENCES location(locid);
-
-----------------------------------------------------------------------
--------------community table--------------------------------------------
-----------------------------------------------------------------------
-CREATE TABLE community 
-(
-    commid integer NOT NULL,
-    description character varying(100) NOT NULL
-);
-CREATE SEQUENCE community_commid_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER TABLE ONLY community ALTER COLUMN commid SET DEFAULT nextval('community_commid_seq'::regclass);
-SELECT pg_catalog.setval('community_commid_seq', 7, false);
-ALTER TABLE ONLY community ADD CONSTRAINT community_pkey PRIMARY KEY (commid);
 
 ----------------------------------------------------------------------
 -------------personalintersts table-----------------------------------
@@ -348,9 +349,9 @@ libprohibited@raildex.tv	3
 zapper@raildex.tv	4
 \.
 
-COPY project (projid, goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc) FROM stdin;
-1	500	70	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	1	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.
-2	50000	10000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	1	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.
+COPY project (projid, goalamount, curramount, startdate, enddate, description, locid, popularity, rating, longdesc, video, picture) FROM stdin;
+1	500	70	2015-2-21	2015-06-21	Get a bunk bed for Toumas room	1	100	0	Please help me so that I wont have to sleep in the bathtub every night. For obvious reasons Index doesnt want to sleep in the same bed with me so I was hoping to get a bunk bed where I can sleep on the bottom row. That way Index wont have to worry about personal safety and I wont have to wake up sore every morning.	https://www.youtube.com/embed/uqEwvVIeFr4	http://www.ikea.com/ms/media/roomsettings/20141/bedroom/20141_bero09a/20141_bero09a_01_PE374761.jpg
+2	50000	10000	2015-2-21	2016-2-21	Make gigabit wifi available citywide	1	100	0	Imagine the convenience of having internet access wherever you go. All the worlds information at your fingertips. No more need to go to internet cafes or telephone booths. This will be especially andy for those who like to say up late and dont want to always be seen alone in a phone both.	https://www.youtube.com/embed/vX7wobS48YA	http://images.atelier.net/sites/default/files/imagecache/scale_crop_587_310/articles/414945/atelier-wifi-signal.png
 \.
 
 
@@ -390,4 +391,14 @@ copy comment (cid, projid, email, comment) from stdin;
 1	1	creepo@raildex.tv	It is nice to see my child being so considerate.
 2	2	whitehat@raildex.tv	I would really appreciate not having to sync offline data all the time.
 3	2	legends@raildex.tv	I wont have to waste LTE data anymore looking up more urban legends.
+\.
+
+copy commcomment (ccid, commid, email, comment) from stdin;
+1	1	libprohibited@raildex.tv	I know all the secrets there is to magic.
+2	1	right_hand@raildex.tv	Luckily for me I can negate anything funny you try on me :-p
+\.
+
+copy loccomment (lcid, locid, email, comment) from stdin;
+1	1	right_hand@raildex.tv	So much bad shit happens here. Who the hell really runs this place?
+2	1	zapper@raildex.tv	I know right? There are some pretty sick minds behind the scenes.
 \.
