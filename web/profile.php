@@ -85,6 +85,10 @@
 
 
 		</div>
+		<?php include("template/footer.php"); ?>
+		<script src="assets/js/bootstrap.min.js"></script>
+    	<script src="assets/js/retina.js"></script>
+
 	</body>
 
 
