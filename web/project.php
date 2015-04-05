@@ -9,18 +9,80 @@
   		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
   		$projid = $_GET["projid"];
 
-  		$project = "select * from project natural join location";
+  		$project = "select * from project natural join location where projid=$1";
   		pg_prepare($dbconn, "project", $project);
   		$result = pg_execute($dbconn, "project", array($projid));
   		$row = pg_fetch_array($result);
 
   	?>
-    <title><?php echo $row["title"] ?></title>
+    <title><?php echo $row["description"] ?></title>
 
     <!-- Custom styles for this template -->
     <link href="assets/css/project.css" rel="stylesheet"> 
 
-   
+	<script>
+	//for ajax updating the current $$ amount after you donate for INSTANT GRATIFICATION
+	function donate(projid, goal)
+	{
+		var donation = document.getElementById("donation").value;
+		if(donation < 1)
+		{
+			return;
+		}
+		var newAmount = new XMLHttpRequest();
+		newAmount.onreadystatechange= function ()
+		{
+			var resp = newAmount.responseText;
+			document.getElementById("live_total").innerHTML="$"+resp;
+			//document.getElementById("progress").style.width = resp / goal * 100;
+		}
+		newAmount.open("POST", "backend/addmoney.php", true);
+		newAmount.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		newAmount.send("projid="+projid+"&amount="+donation);
+	}
+
+	function rate(projid)
+	{
+		var rating = document.getElementById("rating").value;
+		var ajax = new XMLHttpRequest();
+		ajax.onreadystatechange = function ()
+		{
+			document.getElementById("liverating").innerHTML=ajax.responseText;
+		}
+		ajax.open("POST", "backend/addrating.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("projid="+projid+"&rating="+rating);
+	}
+
+	function urate(email, disp, rater)
+	{
+		var urating = document.getElementById(rater).value;
+		var ajax = new XMLHttpRequest();
+		ajax.onreadystatechange = function ()
+		{
+			document.getElementById(disp).innerHTML="("+ajax.responseText+")";
+		}
+		ajax.open("POST", "backend/addurating.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("ratee="+email+"&urating="+urating);
+	}
+
+	function addcomment(pid, fname, lname)
+	{
+		var comment = document.getElementById("newcomment").value;
+		var ajax = new XMLHttpRequest();
+		var history = document.getElementById("commentHistory");
+		//don't really need ajax here but this is a convenient way to send the info
+		//	to the db and add the new comment in at the same time
+		ajax.open("POST", "backend/addcomment.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("pid="+pid+"&comment="+comment);
+
+		var newc = document.createElement("li");
+		newc.innerHTML="<h4>"+fname + " " + lname+"</h4><li><p>"+comment+"</p></li>";
+		history.appendChild(newc);
+	}
+	</script>
   </head>
 
   <body>
@@ -46,7 +108,7 @@
 	<div class="container">
 		<div class="row centered">
 			<div class="col-sm-8 col-sm-offset-2">
-				<h1><?php echo $row["title"] ?></h1>
+				<h1><?php echo $row["description"] ?></h1>
 				<hr>
 			</div>
 		</div><!-- /row -->
@@ -58,7 +120,7 @@
 			<div class="col-lg-4 col-md-4 col-xs-12">
 				<div class="container-fliud project-info">
 					<div class="current-balance">
-						<h3>$<?php echo $row["curramount"] ?></h3>
+						<h3 id="live_total">$<?php echo $row["curramount"] ?></h3>
 						<p class="lead">Raised of <?php echo $row["goalamount"] ?> Goal</p>			
 					</div>						
 					<div class="progress">
@@ -68,13 +130,14 @@
 							$today = new DateTime(date("Y-m-d"));
 							$remaining = date_diff($today, $enddate) ;
 						?>
-						<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+						<div id="progress" class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
 			    				<?= $progress ?>%
 			 			</div>
 					</div>									
 					<div class="remain-time">
 						<p class="lead"><i class="fa fa-clock-o"></i> <?php echo $remaining->days ?>  Days Left</p>
 					</div>
+
 					<?php
 					$funders = "select distinct count(email) from funder where projid=$1";
 					pg_prepare($dbconn, "funders", $funders);
@@ -82,25 +145,20 @@
 					$row2 = pg_fetch_row($result2);
 					?>
 					<p class="lead"><i class="fa fa-user"></i> <?= $row2[0]?> Funders</p>
-					<div class="tags">		
-						<p class="lead"><i class="fa fa-tag"></i> <?php echo $row["description"] ?></p>
-						<p class="lead"><i class="fa fa-map-marker"></i> <?php echo $row["locname"] ?></p>
-					</div>
+					<p class="lead"><i class="fa fa-map-marker"></i> <?php echo $row["locname"] ?></p>
+
+					<?php
+						if($_SESSION["loggedin"] == 1)
+						{
+					?>
 					<div class="form-group">
-						<input type="text" class="form-control">
-						<button type="sub" class="btn btn-danger btn-lg btn-block">Fund the project!</button>
+						<input type="text" id="donation" class="form-control">
+						<button type="sub" class="btn btn-danger btn-lg btn-block" onclick="donate('<?= $projid?>', '<?= $row['goalamount']?>')">Fund the project!</button>
 						</div>	    	
 
-					<div class="p-initiator">
-						<h4>Initiated by: </h4>
-						<a href="#">
-							<p class="lead"><i class="fa fa-rocket"></i> <?php echo $row["fname"] . " " . $row["lname"] ." (" . $row["reputation"] . ")" ;?></p>
-						</a>
-					</div>
-
 					<div class="form-group">
-						<h4>Rate initiator:</h4>
-						<select class="form-control" id="reputation" name="reputation">
+						<h4 class="rate">Rate Project (<span id="liverating"><?= $row['rating']?></span>):</h4>
+						<select class="form-control" id="rating" name="rating">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -112,29 +170,71 @@
 							<option value="9">9</option>
 							<option value="10">10</option>
 						</select>
-						<button class="btn-theme">submit</button>
+						<button class="btn-theme" onclick="rate('<?= $projid?>')">submit</button>
 					</div>
-
-					<div class="form-group">
-						<h4 class="rate">Rate Project:</h4>
-						<select class="form-control" id="projrate" name="projrate">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-							<option value="9">9</option>
-							<option value="10">10</option>
-						</select>
-						<button class="btn-theme">submit</button>
-					</div>
-
+					<?php
+						}
+					?>
 				</div>
 			</div>
 		</div>
+		<hr>
+		
+		<div class="row">
+			<div class="tags">
+				<?php
+				$tags = "select description from communityendorsement natural join community where projid=$1";
+				pg_prepare($dbconn, "tags", $tags);
+				$result3 = pg_execute($dbconn, "tags", array($projid));
+				while($row3 = pg_fetch_row($result3))
+				{
+				?>
+					<p class="lead"><i class="fa fa-tag"></i> <?php echo $row3[0] ?></p>
+				<?php
+				}
+				?>
+			</div>
+
+		<?php
+			$initinfo = "select * from initiator natural join users where projid=$1";
+			pg_prepare($dbconn, "initinfo", $initinfo);
+			$result4 = pg_execute($dbconn, "initinfo", array($projid));
+			while($row4 = pg_fetch_array($result4))
+			{
+		?>
+
+		<div class="p-initiator">
+			<h4>Initiated by: </h4>
+			<a href="#">
+				<p class="lead"><i class="fa fa-rocket"></i> <?php echo $row4["fname"] . " " . $row4["lname"];?> <span id="liveurate<?= $row4['email']?>">(<?= $row4['reputation']?>)</span></p>
+			</a>
+		</div>
+
+		<?php
+				if($_SESSION["loggedin"] == 1)
+				{
+		?>		
+		<div class="form-group">
+			<h4>Rate initiator:</h4>
+			<select class="form-control" id="rater<?= $row4['email']?>">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>
+			<button class="btn-theme" onclick="urate('<?= $row4['email']?>', 'liveurate<?= $row4['email']?>', 'rater<?= $row4['email']?>')">submit</button>
+		</div>
+		</div>
+		<?php
+				}
+			}
+		?>
 		<hr>
 
 		<div class="row">
@@ -147,7 +247,7 @@
 			<h2>Comments</h2>
 				<label for="newcomment" maxlength="200">Comment on the project:</label>
 				<textarea class="form-control" rows="4" id="newcomment"></textarea>
-				<button class="btn-theme" onclick="addcomment('<?php echo $id?>', '<?php echo $sessid?>', '<?php echo $fname?>', '<?php echo $lname?>')">Add Comment</button>
+				<button class="btn-theme" onclick="addcomment('<?php echo $projid?>', '<?php echo $_SESSION['fname']?>', '<?php echo $_SESSION['lname']?>')">Add Comment</button>
 				<ul id="commentHistory">
 					<?php
 						$projcomments = "select fname, lname, comment from comment natural join users where projid=$1 order by cid asc";
