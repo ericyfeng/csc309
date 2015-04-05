@@ -45,7 +45,7 @@
 	=============================================================================================================================> 
 
 	<div class="container">
-		<div class="row centered">
+		<div class="row centered top-margin">
 			<div class="col-sm-8 col-sm-offset-2">
 				<h1><?php echo $row["title"] ?></h1>
 				<hr>
