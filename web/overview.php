@@ -140,10 +140,10 @@
 		$summary = "select * from project natural join location where projid=$1";
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
-		$row = pg_fetch_row($result);
-		$rating = $row[8];
-		$longdesc = $row[9];
-		$exp = $row[5];
+		$row = pg_fetch_assoc($result);
+		$rating = $row["rating"];
+		$longdesc = $row["longdesc"];
+		$exp = $row["enddate"];
 		$expDate = new DateTime($exp);
 		if($dbdate > $expDate)
 		{
@@ -182,7 +182,7 @@
 			<div class="row">
 
 			<!--Print project name-->
-			<h1> <?php echo "$row[6]"?> </h1>
+			<h1> <?php echo $row["description"]?> </h1>
 
 			<!--Project tags-->
 			<ul class="list-inline" id="tags">
@@ -199,11 +199,11 @@
 
 			<!--Project summary information-->
 			<table class="table table-bordered table-striped">
-				<tr><td><b>Starting Date:</b></td><td><?php echo "$row[4]"?></td></tr>
-				<tr><td><b>End Date:</b></td><td><?php echo "$exp"?></td></tr>
-				<tr><td><b>Location:</b></td><td><?php echo "$row[10]"?></td></tr>
-				<tr><td><b>Current Funding:</b></td><td><span id="current">$<?php echo "$row[3]"?></span></td></tr>
-				<tr><td><b>Target Funding:</b></td><td>$<?php echo "$row[2]"?></td></tr>
+				<tr><td><b>Starting Date:</b></td><td><?php echo $row["startdate"]?></td></tr>
+				<tr><td><b>End Date:</b></td><td><?php echo $exp?></td></tr>
+				<tr><td><b>Location:</b></td><td><?php echo $row["locname"]?></td></tr>
+				<tr><td><b>Current Funding:</b></td><td><span id="current">$<?php echo $row["curramount"]?></span></td></tr>
+				<tr><td><b>Target Funding:</b></td><td>$<?php echo $row["goalamount"]?></td></tr>
 			</table>
 			</div>
 
