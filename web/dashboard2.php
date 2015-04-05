@@ -44,6 +44,18 @@
 			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 			ajax.send("sessid="+sessid+"&pid="+pid);
 		}
+
+		function redirect(mode)
+		{
+			if(mode == 'comm')
+			{
+				window.location.replace("community.php?commid="+document.getElementById("commsel").value);
+			}
+			else if (mode == 'loc')
+			{
+				window.location.replace("location.php?locid="+document.getElementById("locsel").value);
+			}
+		}
 		</script>
   </head>
 
@@ -122,28 +134,32 @@
 						<h3>Connect!</h3>
 						<hr>
 							<h4>Communities:</h4>
-							<select class="form-control">
+							<select id="commsel" class="form-control">
 								<?php 
 									$listcomm = "select commid, description from personalinterests natural join community where email=$1";
 									pg_prepare($dbconn, "listcomm", $listcomm);
 									$result = pg_execute($dbconn, "listcomm", array($email));
 									while ($row = pg_fetch_array($result)) {
 								?>
-										<option value="<?php echo $row["commid"] ?>"><?php echo $row["description"] ?></option>
+										<option value="<?php echo $row['commid'] ?>">
+											<?php echo $row["description"] ?>
+										</option>
 								<?php } ?>
 							</select>
+							<button onclick="redirect('comm')">Go!</button>
+
 							<h4>Locations:</h4>
-							<select class="form-control">
+							<select id="locsel" class="form-control">
 								<?php 
 									$listloc = "select locid, locname from location";
 									pg_prepare($dbconn, "listloc", $listloc);
 									$result = pg_execute($dbconn, "listloc", array());
 									while ($row = pg_fetch_array($result)) {
 								?>
-										<option value="<?php echo $row["locid"] ?>"><?php echo $row["locname"] ?></option>
+										<option value="<?php echo $row['locid'] ?>"><?php echo $row["locname"] ?></option>
 								<?php } ?>
 							</select>
-
+							<button onclick="redirect('loc')">Go!</button>
 					</div>
 				</div><!-- /row -->
 		</div>
