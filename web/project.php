@@ -320,7 +320,7 @@
 
 				</ul>
 
-
+		</div>
 	</div>
 
 	<! ========== CALL TO ACTION BAR =============================================================================================== 
@@ -366,14 +366,14 @@
 		<!--Add owner popup-->
 		<div class="modal fade" id="addowner" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 			<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Add Project Owner</h4>
-				</div>
-				<div class="modal-body">
-					<input type="text" id="newinit"></input>
-					<input type="button" class="btn btn-warning" onclick="addinit('<?php echo $projid?>')" value="+">
-				</div>
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4>Add Project Owner</h4>
+					</div>
+					<div class="modal-body">
+						<input type="text" id="newinit">
+						<input type="button" class="btn btn-warning" onclick="addinit('<?php echo $projid?>')" value="+">
+					</div>
 				</div>
 			</div>
 		</div>
@@ -381,24 +381,24 @@
 		<!--Add tag popup-->
 		<div class="modal fade" id="addtag" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 			<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Add A Tag</h4>
-				</div>
-				<div class="modal-body">
-					<select id="newtags" name="newtags">
-						<?php
-							$unused = "select * from community where (commid) not in (select commid from communityendorsement where projid=$1)";
-							pg_prepare($dbconn, "unused", $unused);
-							$result6 = pg_execute($dbconn, "unused", array($projid));
-							while($row6 = pg_fetch_row($result6))
-							{
-								echo "<option value=\"$row6[0]\">$row6[1]</option>";
-							}
-						?>
-					</select>
-					<input type="button" class="btn btn-warning" onclick="addtag('<?php echo $projid?>')" value="+">
-				</div>
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4>Add A Tag</h4>
+					</div>
+					<div class="modal-body">
+						<select id="newtags" name="newtags">
+							<?php
+								$unused = "select * from community where (commid) not in (select commid from communityendorsement where projid=$1)";
+								pg_prepare($dbconn, "unused", $unused);
+								$result6 = pg_execute($dbconn, "unused", array($projid));
+								while($row6 = pg_fetch_row($result6))
+								{
+									echo "<option value=\"$row6[0]\">$row6[1]</option>";
+								}
+							?>
+						</select>
+						<input type="button" class="btn btn-warning" onclick="addtag('<?php echo $projid?>')" value="+">
+					</div>
 				</div>
 			</div>
 		</div>

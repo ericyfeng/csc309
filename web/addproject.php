@@ -97,14 +97,6 @@
 									</select>									
 								</div>
 								<div class="top-margin">
-									<label>Description</label>
-									<textarea type="text" class="form-control" name="longdesc" rows="6"></textarea>
-									<!--<textarea rows='5' class="form-control" name="description" id="description"></textarea>-->
-								</div>																		
-								<div id="errmsg"></div>
-								<br>
-
-								<div class="top-margin">
 									<label>Video Description</label>
 									<input type="text" class="form-control" name="video"></input>
 								</div>	
@@ -112,7 +104,16 @@
 								<div class="top-margin">
 									<label>Image URL</label>
 									<input type="text" class="form-control" name="picture"></input>
-								</div>	
+								</div>									
+								<div class="top-margin">
+									<label>Description</label>
+									<textarea type="text" class="form-control" name="longdesc" rows="6"></textarea>
+									<!--<textarea rows='5' class="form-control" name="description" id="description"></textarea>-->
+								</div>																		
+								<div id="errmsg"></div>
+								<br>
+
+
 
 								<div class="row">
 									<div class="col-lg-offset-8 col-lg-4 text-right">
