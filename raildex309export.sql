@@ -179,7 +179,7 @@ ALTER TABLE ONLY communityendorsement ADD CONSTRAINT communityendorsement_pkey P
 ALTER TABLE ONLY communityendorsement
     ADD CONSTRAINT communityendorsement_commid_fkey FOREIGN KEY (commid) REFERENCES community(commid);
 ALTER TABLE ONLY communityendorsement
-    ADD CONSTRAINT communityendorsement_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+    ADD CONSTRAINT communityendorsement_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
 
 ----------------------------------------------------------------------
 -------------initiator table--------------------------------------------
@@ -193,7 +193,7 @@ ALTER TABLE ONLY initiator ADD CONSTRAINT initiator_pkey PRIMARY KEY (projid, em
 ALTER TABLE ONLY initiator
     ADD CONSTRAINT initiator_email_fkey FOREIGN KEY (email) REFERENCES users(email);
 ALTER TABLE ONLY initiator
-    ADD CONSTRAINT initiator_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+    ADD CONSTRAINT initiator_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
 
 ----------------------------------------------------------------------
 -------------funder table--------------------------------------------
@@ -218,7 +218,7 @@ ALTER TABLE ONLY funder ADD CONSTRAINT funder_pkey PRIMARY KEY (fundid);
 ALTER TABLE ONLY funder
     ADD CONSTRAINT funder_email_fkey FOREIGN KEY (email) REFERENCES users(email);
 ALTER TABLE ONLY funder
-    ADD CONSTRAINT funder_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+    ADD CONSTRAINT funder_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
 
 ----------------------------------------------------------------------
 -------------ratings table--------------------------------------------
@@ -242,7 +242,7 @@ ALTER TABLE ONLY rating
 ALTER TABLE ONLY rating
     ADD CONSTRAINT rating_email_fkey FOREIGN KEY (email) REFERENCES users(email);
 ALTER TABLE ONLY rating
-    ADD CONSTRAINT rating_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+    ADD CONSTRAINT rating_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
 
 ----------------------------------------------------------------------
 -------------session information table--------------------------------
@@ -303,7 +303,7 @@ ALTER TABLE ONLY comment
 ALTER TABLE ONLY comment
     ADD CONSTRAINT comment_email_fkey FOREIGN KEY (email) REFERENCES users(email);
 ALTER TABLE ONLY comment
-    ADD CONSTRAINT comment_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid);
+    ADD CONSTRAINT comment_projid_fkey FOREIGN KEY (projid) REFERENCES project(projid) ON DELETE CASCADE;
 
 -----------------------------------------------------------------
 -----------------------sample data info--------------   ------------
