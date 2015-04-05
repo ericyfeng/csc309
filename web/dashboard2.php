@@ -78,7 +78,7 @@
 					<div class="row mt">
 					<?php
 						//for now just pull any project in the backend to display
-						$myproj = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description, t1.email from (select * from project natural join communityendorsement natural join location natural join initiator order by rating desc limit 6) t1, community where community.commid=t1.commid and email!=$1";
+						$myproj = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description, t1.email from (select * from project natural join communityendorsement natural join location natural join initiator order by rating desc limit 6) t1, community where community.commid=t1.commid and email=$1";
 						pg_prepare($dbconn, "myproj", $myproj);
 						$result = pg_execute($dbconn, "myproj", array($email));
 						while ($row = pg_fetch_row($result)) {
@@ -115,6 +115,38 @@
 					</div><!-- /row -->
 				</div><!-- /container -->
 		</div><!-- body row -->
+		<div class="row">
+			<div class="container">	
+				<div class="row mt centered ">
+					<div class="col-lg-4 col-lg-offset-4">
+						<h3>Connect!</h3>
+						<hr>
+							<h4>Communities:</h4>
+							<select class="form-control">
+								<?php 
+									$listcomm = "select commid, description from personalinterests natural join community where email=$1";
+									pg_prepare($dbconn, "listcomm", $listcomm);
+									$result = pg_execute($dbconn, "listcomm", array($email));
+									while ($row = pg_fetch_array($result)) {
+								?>
+										<option value="<?php echo $row["commid"] ?>"><?php echo $row["description"] ?></option>
+								<?php } ?>
+							</select>
+							<h4>Locations:</h4>
+							<select class="form-control">
+								<?php 
+									$listloc = "select locid, locname from location";
+									pg_prepare($dbconn, "listloc", $listloc);
+									$result = pg_execute($dbconn, "listloc", array());
+									while ($row = pg_fetch_array($result)) {
+								?>
+										<option value="<?php echo $row["locid"] ?>"><?php echo $row["locname"] ?></option>
+								<?php } ?>
+							</select>
+
+					</div>
+				</div><!-- /row -->
+		</div>
 
 
 	<! ========== FOOTER ======================================================================================================== 
