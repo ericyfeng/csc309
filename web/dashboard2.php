@@ -33,16 +33,16 @@
 			}
 		}
 
-		function rm(pid, sessid)
+		function rm(pid)
 		{
 			var ajax = new XMLHttpRequest();
 			ajax.onreadystatechange = function ()
 			{
 				document.getElementById(pid).innerHTML=ajax.responseText;
 			}
-			ajax.open("POST", "rmproj.php", true);
+			ajax.open("POST", "backend/rmproj.php", true);
 			ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			ajax.send("sessid="+sessid+"&pid="+pid);
+			ajax.send("pid="+pid);
 		}
 
 		function redirect(mode)
@@ -90,36 +90,36 @@
 					<div class="row mt">
 					<?php
 						//for now just pull any project in the backend to display
-						$myproj = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description, t1.email from (select * from project natural join communityendorsement natural join location natural join initiator order by rating desc limit 6) t1, community where community.commid=t1.commid and email=$1";
+						$myproj = "select * from project natural join location natural join initiator natural join users where email=$1";
 						pg_prepare($dbconn, "myproj", $myproj);
 						$result = pg_execute($dbconn, "myproj", array($email));
-						while ($row = pg_fetch_row($result)) {
+						while ($row = pg_fetch_assoc($result)) {
 					?>
 						<?php 
-							$progress = round(($row[2] / $row[1]), 2) * 100;
-							$enddate = new DateTime($row[4]);
+							$progress = round(($row["curramount"] / $row["goalamount"]), 2) * 100;
+							$enddate = new DateTime($row["enddate"]);
 							$today = new DateTime(date("Y-m-d"));
 							$remaining = date_diff($today, $enddate) ;
 						?>
-						<div class="col-lg-4 col-md-4 col-xs-12 desc">
-							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row[0]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+						<div id="<?= $row['projid']?>" class="col-lg-4 col-md-4 col-xs-12 desc">
+							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row['projid']?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
-								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row[5] ?></h4>
+								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row['description'] ?></h4>
 								  	<p class="b-from-right b-animate b-delay03">Read More.</p>
 								</div>
 							</a>
-							<p><?= $row[5] ?></p>
-							<p class="lead"><?= $row[9] ?></p>
+							<p><?= $row['description'] ?></p>
+							<p class="lead"><?= $row['longdesc'] ?></p>
 							<div class="progress">
 			  					<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
 			    				<?= $progress ?>%
 			 					</div>
 							</div>	
 
-							<button class="btn btn-danger btn-lg btn-block" onclick="rm(<?php echo $row[0] . ", " . $sessid ;?>)">Delete</button>		
+							<button class="btn btn-danger btn-lg btn-block" onclick="rm('<?= $row['projid']?>')">Delete</button>		
 							
 							<hr-d>
-							<p class="time"><i class="fa fa-tag"></i> <?= $row[10] ?> | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
+							<p class="time"><i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row['locname'] ?></p>
 						</div><!-- col-lg-4 -->
 						<?php
 							}
