@@ -137,6 +137,29 @@
 			<p><?php echo $row["longdesc"] ?></p>
 		</div>
 
+		<hr>
+		<div class="row">
+			<h2>Comments</h2>
+				<label for="newcomment" maxlength="200">Comment on the project:</label>
+				<textarea class="form-control" rows="4" id="newcomment"></textarea>
+				<button class="btn-theme" onclick="addcomment('<?php echo $id?>', '<?php echo $sessid?>', '<?php echo $fname?>', '<?php echo $lname?>')">Add Comment</button>
+				<ul id="commentHistory">
+					<?php
+						$projcomments = "select fname, lname, comment from comment natural join users where projid=$1 order by cid asc";
+						pg_prepare($dbconn, "projcomments", $projcomments);
+						$result = pg_execute($dbconn, "projcomments", array($projid));
+
+						while($row = pg_fetch_row($result))
+						{
+							echo "<h4>$row[0] $row[1]:</h4>
+								<li><p>$row[2]</p></li>";
+								
+						}
+					?>
+
+				</ul>
+		</div>
+
 	</div>
 
 	<! ========== CALL TO ACTION BAR =============================================================================================== 
@@ -152,118 +175,12 @@
 	<! ========== FOOTER ======================================================================================================== 
 	=============================================================================================================================>    
 	
-	<div id="f">
-		<div class="container">
-			<div class="row">
-				<!-- ADDRESS -->
-				<div class="col-lg-3">
-					<h4>Contact Us</h4>
-					<p>
-						<i class="fa fa-mobile"></i> +1-123-3902<br/>
-						<i class="fa fa-envelope-o"></i> support@brandname.com
-					</p>
-				</div>  <!--/col-lg-3 -->
-				
-
-				<!-- LATEST POSTS -->
-				<div class="col-lg-3">
-					<h4>Latest Projects</h4>
-					<p>
-						<i class="fa fa-angle-right"></i> The Ninja Film<br/>
-						<i class="fa fa-angle-right"></i> Water proof bananas<br/>
-						<i class="fa fa-angle-right"></i> Strike Money<br/>
-						<i class="fa fa-angle-right"></i> Smart Headphones<br/>
-						<i class="fa fa-angle-right"></i> 50 shades of blue novel<br/>
-					</p>
-				</div><!-- /col-lg-3 -->
-				
-				<!-- NEW PROJECT -->
-				<div class="col-lg-3">
-					<h4>New Project</h4>
-					<a href="#"><img class="img-responsive" src="assets/img/portfolio/port03.jpg" alt="" /></a>
-				</div><!-- /col-lg-3 -->
-				
-				
-			</div> <!--/row -->
-		</div><!-- /container -->
-	</div><!-- /f -->
+	<?php include("template/footer.php"); ?>	
 
 	<! ========== MODALS ======================================================================================================== 
 	=============================================================================================================================>    
 
-    <div class="modal fade" id="signup" tabindex="-1" role= "dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Sign Up</h4>
-				</div>
-				<div class="modal-body">
-
-						<div class="form-group">
-							<label for="fname">First Name:</label>
-							<input type="text" class="form-control" id="fname" name="fname" placeholder="Please Enter Your First Name">
-						</div>
-						<div class="form-group">
-							<label for="text">Last Name:</label>
-							<input type="text" class="form-control" id="lname" name="lname" placeholder="Please Enter Your Last Name">
-						</div>				
-						<div class="form-group">
-							<label for="email">Email:</label>
-							<input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email">
-						</div>
-						<div class="form-group">
-							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="passwd" name="passwd"  placeholder="Please Enter Your Password">
-						</div>
-						<div class="form-group">
-							<label for="repwd">Confirm Password:</label>
-							<input type="password" class="form-control" id="confirm" name="confirm" placeholder="Please Re-Enter Your Password">
-						</div>
-						<div class="modal-footer">
-				      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				      		<button type="button" class="btn btn-primary" onclick="regjax()">Sign Up!</button>
-	  					</div>						
-
-					<p id="status"></p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="login" tabindex="-1" role= "dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4>Login</h4>
-				</div>
-				<div class="modal-body">
-					<form action="login.php" method="POST">
-						<div class="form-group">
-							<label for="email">Email:</label>
-							<input type="email" class="form-control" id="email" name="email" placeholder="Please Enter Your Email">
-						</div>
-						<div class="form-group">
-							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="pwd" name="passwd" placeholder="Please Enter Your Password">
-						</div>
-						<div class="checkbox">
-							<label><input type="checkbox">Remember Me</label>
-						</div>
-						<div class="extralogin">
-							<a href="#">Forgot your password?</a>
-							<p>Don't have an account?
-								<a href="#signup" data-toggle="modal" data-dismiss="modal">Register now!</a>
-							</p>	
-						</div>
-						<div class="modal-footer">
-					      	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					      	<input type="submit" class="btn btn-primary" value="Log In">
-  						</div>
-					</form>
-				</div>
-
-			</div>
-		</div>
-	</div>
+	<?php include("template/usermodals.php"); ?>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
