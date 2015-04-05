@@ -27,7 +27,7 @@
                         <a href="../newproject.php">New Project</a>
                     </li>
                     <li>
-                        <a href="../dashboard.php">Dashboard</a>
+                        <a href="../dashboard2.php">Dashboard</a>
                     </li>                    
                     <li>
                         <a href="../profile.php">Profile</a>

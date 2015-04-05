@@ -2,14 +2,12 @@
 <html lang="en">
   <head>
 	<?php 
-		session_start();
+		include("template/head.php");
 		if(!isset($_SESSION["loggedin"]))
 		{
 			$_SESSION["loggedin"] = 0;
 		}
-		include("template/head.php");
 	
-  	include("template/head.php"); 
 	?>
     <title>Explore</title>
 
@@ -151,8 +149,8 @@
 							$remaining = date_diff($today, $enddate) ;
 						?>
 
-						<div class="<?= $tagstring ?>">
-							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row[0]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+						<div class="<?php echo $tagstring ?>">
+							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row["projid"]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
 								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row["description"] ?></h4>
 								  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>

@@ -36,7 +36,7 @@
 				<div class="col-lg-8 col-lg-offset-2 mt">
 					<h1>We are a Crowd Funding agency. We focus on Ideas, Awareness, and Execution.</h1>
 					<a href="explore.php">
-    					<p class="mt"><button type="button" class="btn btn-cta btn-lg">LEARN MORE</button></p>
+    					<p class="mt"><button type="button" class="btn btn-cta btn-lg">EXPLORE</button></p>
     				</a>
 				</div>
 				
