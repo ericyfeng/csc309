@@ -82,6 +82,35 @@
 		newc.innerHTML="<h4>"+fname + " " + lname+"</h4><li><p>"+comment+"</p></li>";
 		history.appendChild(newc);
 	}
+
+	//for ajax feedback on whether your attempt to add a person as an initiator worked
+	function addinit(pid)
+	{
+		var email = document.getElementById("newinit").value;
+		var ajax = new XMLHttpRequest();
+		ajax.onreadystatechange = function ()
+		{
+			document.getElementById("status").innerHTML=ajax.responseText;
+		}
+			ajax.open("POST", "backend/addinit.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("email="+email+"&pid="+pid);
+	}
+
+	//for ajax updating of your project's tag list
+	function addtag(pid)
+	{
+		var commsel = document.getElementById("newtags");
+		var commid = commsel.value;
+		var ajax = new XMLHttpRequest();
+		ajax.onreadystatechange = function ()
+		{
+			document.getElementById("taglist").innerHTML=ajax.responseText;
+		}
+		ajax.open("POST", "backend/addtag.php", true);
+		ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		ajax.send("commid="+commid+"&pid="+pid);
+	}
 	</script>
   </head>
 
@@ -90,15 +119,27 @@
 	=============================================================================================================================>
 
 	<?php
-		//enable php debugging
+		$owner;
 		if($_SESSION["loggedin"] == 1)
 		{
 			include("template/loginnav.php");
-			//include("template/navbar.php");
+			$ownertest = "select count(*) from project natural join initiator where email=$1 and projid=$2";
+			pg_prepare($dbconn, "ownertest", $ownertest);
+			$result5 = pg_execute($dbconn, "ownertest", array($_SESSION["email"], $projid));
+			$row5 = pg_fetch_row($result5);
+			if($row5[0] == 1)
+			{
+				$owner = 1;
+			}
+			else
+			{
+				$owner = 0;
+			}
 		}
 		else
 		{
 			include("template/navbar.php");
+			$ownere = 0;
 		}
 	?>
 
@@ -181,7 +222,21 @@
 		<hr>
 		
 		<div class="row">
-			<div class="tags">
+		<?php
+			if($owner == 1)
+			{
+		?>
+			<a href="#" class="btn btn-info" data-toggle="modal" data-target="#addtag">
+				<span class="fa fa-tag"></span> +
+			</a>
+
+			<a href="#" class="btn btn-info" data-toggle="modal" data-target="#addowner">
+				<span class="fa fa-rocket"></span> +
+			</a>
+		<?php
+			}
+		?>
+			<div class="tags" id="taglist">
 				<?php
 				$tags = "select description from communityendorsement natural join community where projid=$1";
 				pg_prepare($dbconn, "tags", $tags);
@@ -189,7 +244,7 @@
 				while($row3 = pg_fetch_row($result3))
 				{
 				?>
-					<p class="lead"><i class="fa fa-tag"></i> <?php echo $row3[0] ?></p>
+					<span class="lead"><i class="fa fa-tag"></i> <?php echo $row3[0] ?> </span>
 				<?php
 				}
 				?>
@@ -208,7 +263,7 @@
 			<a href="#">
 				<p class="lead"><i class="fa fa-rocket"></i> <?php echo $row4["fname"] . " " . $row4["lname"];?> <span id="liveurate<?= $row4['email']?>">(<?= $row4['reputation']?>)</span></p>
 			</a>
-		</div>
+
 
 		<?php
 				if($_SESSION["loggedin"] == 1)
@@ -235,6 +290,7 @@
 				}
 			}
 		?>
+		<p id="status"></p>
 		<hr>
 
 		<div class="row">
@@ -307,7 +363,45 @@
 		});
 	</script>    
 
+		<!--Add owner popup-->
+		<div class="modal fade" id="addowner" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Add Project Owner</h4>
+				</div>
+				<div class="modal-body">
+					<input type="text" id="newinit"></input>
+					<input type="button" class="btn btn-warning" onclick="addinit('<?php echo $projid?>')" value="+">
+				</div>
+				</div>
+			</div>
+		</div>
 
+		<!--Add tag popup-->
+		<div class="modal fade" id="addtag" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Add A Tag</h4>
+				</div>
+				<div class="modal-body">
+					<select id="newtags" name="newtags">
+						<?php
+							$unused = "select * from community where (commid) not in (select commid from communityendorsement where projid=$1)";
+							pg_prepare($dbconn, "unused", $unused);
+							$result6 = pg_execute($dbconn, "unused", array($projid));
+							while($row6 = pg_fetch_row($result6))
+							{
+								echo "<option value=\"$row6[0]\">$row6[1]</option>";
+							}
+						?>
+					</select>
+					<input type="button" class="btn btn-warning" onclick="addtag('<?php echo $projid?>')" value="+">
+				</div>
+				</div>
+			</div>
+		</div>
 
   
   </body>

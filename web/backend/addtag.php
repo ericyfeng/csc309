@@ -11,35 +11,7 @@
 	<body>
 		<?php
 			//setup error print and config
-			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-			date_default_timezone_set('America/Toronto');
-
-			$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
-
-			//check if session id is real or faked
-			$sessid = $_POST["sessid"];
-			$validnum = "select count(*) from session where sessionid=$1";
-			pg_prepare($dbconn, "validnum", $validnum);
-			$result = pg_execute($dbconn, "validnum", array($sessid));
-			$row = pg_fetch_row($result);
-			if($row[0] == 0)
-			{
-				echo "Please login again"; //do not give hints about the failed login
-				exit();
-			}
-
-			//check if the valid session id # is expired or not
-			$expiry = "select expiration from session where sessionid=$1";
-			pg_prepare($dbconn, "expiry", $expiry);
-			$result = pg_execute($dbconn, "expiry", array($sessid));
-			$row = pg_fetch_row($result);
-			$dbdate = new DateTime($row[0]);
-			if($dbdate < new DateTime())
-			{
-				echo "Please login again";
-				exit();
-			}
+			include("checksession.php");
 
 			//check for malicously direct fed data
 			$pid = $_POST["pid"];
@@ -73,7 +45,7 @@
 			$result3 = pg_execute($dbconn, "currentTags", array($pid));
 			while($row3 = pg_fetch_row($result3))
 			{
-				echo "<li class=\"glyphicon glyphicon-tag btn btn-danger\"> $row3[0]</li> ";
+				echo "<span class=\"lead\"><i class=\"fa fa-tag\"></i> $row3[0] </span>";
 			}
 
 		?>
