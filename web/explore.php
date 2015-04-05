@@ -88,19 +88,8 @@
 			    	<div class="container">
 						<div class="row centered mt">
 							<div class="col-lg-8 col-lg-offset-2 mt">
-								<h1 class="titletext">Explore All Live Project! (Page under development)</h1>
-				                <div id="searchbar">
-				                	<div class="center-block">
-				                    	<div class="input-group">
-				                      		<input type="text" class="form-control" placeholder="Start Exploring!">
-				                      		<span class="input-group-btn">
-				                        		<button class="btn btn-default" type="button">search</button>
-				                      		</span>
-				                    	</div><!-- /input-group -->
-				                  	</div><!-- /.col-lg-6 -->
-				                </div><!-- /.row -->					
+								<h1 class="titletext">Explore All Live Projects!</h1>
 							</div>
-							
 						</div><!-- /row -->
 			    	</div><!-- /container -->
 			    </div> <!-- /headerwrap -->
