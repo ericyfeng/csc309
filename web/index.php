@@ -58,35 +58,34 @@
 		<div class="row mt">
 		<?php
 			//for now just pull any project in the backend to display
-			$featured = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description from 
-				(select * from project natural join communityendorsement natural join location order by rating desc limit 6) t1, community where community.commid=t1.commid;";
+			$featured = "select * from project natural join location limit 6";
 			pg_prepare($dbconn, "featured", $featured);
 			$result = pg_execute($dbconn, "featured", array());
-			while ($row = pg_fetch_row($result)) {
+			while ($row = pg_fetch_assoc($result)) {
 		?>
 			<?php 
-				$progress = round(($row[2] / $row[1]), 2) * 100;
-				$enddate = new DateTime($row[4]);
+				$progress = round(($row["curramount"] / $row["goalamount"]), 2) * 100;
+				$enddate = new DateTime($row["enddate"]);
 				$today = new DateTime(date("Y-m-d"));
 				$remaining = date_diff($today, $enddate) ;
 			?>
 			<div class="col-lg-4 col-md-4 col-xs-12 desc">
 				<!-- requires user to login to view projects for now will be changed  -->
-				<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row[0]?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
+				<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row['projid']?>"><img width="350" src="<?= $row['picture']?>" alt="" />
 					<div class="b-wrapper">
-					  	<h4 class="b-from-left b-animate b-delay03"> <?= $row[5] ?></h4>
+					  	<h4 class="b-from-left b-animate b-delay03"> <?= $row['description'] ?></h4>
 					  	<p class="b-from-right b-animate b-delay03">Read More.</p>
 					</div>
 				</a>
-				<p><?= $row[5] ?></p>
-				<p class="lead"><?= $row[9] ?></p>
+				<p><?= $row["description"] ?></p>
+				<p class="lead"><?= $row["longdesc"] ?></p>
 				<div class="progress">
   					<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
     				<?= $progress ?>%
  					</div>
 				</div>			
 				<hr-d>
-				<p class="time"><i class="fa fa-tag"></i> <?= $row[10] ?> | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
+				<p class="time"><i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row["locname"] ?></p>
 
 			</div><!-- col-lg-4 -->
 		<?php
