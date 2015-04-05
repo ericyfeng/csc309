@@ -35,7 +35,7 @@
 						<div class="panel-body">
 							<h3 class="thin text-center">Creating a New Project</h3>
 							<hr>	
-							<form method="POST" action="addproj.php" onsubmit="return validate()">
+							<form method="POST" action="backend/addproj.php" onsubmit="return validate()">
 								<div class="top-margin">
 									<label>Title</label>
 									<input type="text" class="form-control" name="description" required>
@@ -103,6 +103,17 @@
 								</div>																		
 								<div id="errmsg"></div>
 								<br>
+
+								<div class="top-margin">
+									<label>Video Description</label>
+									<input type="text" class="form-control" name="video"></input>
+								</div>	
+
+								<div class="top-margin">
+									<label>Image URL</label>
+									<input type="text" class="form-control" name="picture"></input>
+								</div>	
+
 								<div class="row">
 									<div class="col-lg-offset-8 col-lg-4 text-right">
 										<!--<button id="login" class="btn btn-action" type="submit" onclick="rm()">Sign in</button>-->
