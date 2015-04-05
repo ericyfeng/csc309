@@ -61,37 +61,16 @@
 		}
 	?>
 
-	<!--Surround the body in its own container-->
 
-		<!--Everything in the body will be in a single row-->
-		<div class="row">
-			<div class="col-md-2">
-				<div id="menu">
-					<div class="container-fliud pull-right">
-						<ul class="nav">
-							<li>Categories</li>
-								<li><a onclick="filtertags('commgeneric')">ALL</a></li>
-								<?php
-									//for now just pull any project in the backend to display
-									$categories = "select * from community;";
-									pg_prepare($dbconn, "cat", $categories);
-									$result = pg_execute($dbconn, "cat", array());
-									while ($row = pg_fetch_row($result)) {
-												
-										echo "<li><a onclick=\"filtertags('comm$row[0]')\">$row[1]</a></li>";
-									}
-								?>								
-						</ul>
-					</div>
-				</div>
-			</div>
+
 
 
 		<! ========== PROJECTS ==================================================================================================== 
 		=============================================================================================================================>    
-			<div class="col-md-8">		
-				<div class="container">	
 
+		<!--Everything in the body will be in a single row-->
+		<div class="row">
+				<div class="container">	
 					<div class="row mt centered ">
 						<div class="col-lg-4 col-lg-offset-4">
 							<h3>My Projects</h3>
@@ -136,8 +115,6 @@
 						?>	
 					</div><!-- /row -->
 				</div><!-- /container -->
-			</div> <!-- col-md-8 -->
-
 		</div><!-- body row -->
 
 

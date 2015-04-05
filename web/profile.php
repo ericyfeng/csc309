@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+	session_start();
 	include("backend/checksession.php");
 	$fname = $_SESSION["fname"];
 	$lname = $_SESSION["lname"];
