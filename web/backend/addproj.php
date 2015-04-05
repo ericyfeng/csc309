@@ -17,6 +17,12 @@
 	{
 		$picture = 'assets/img/portfolio/port04.jpg';
 	}
+
+	if($video != NULL)
+	{
+    	preg_match("/youtu.be\/([a-z1-9.-_]+)/", $video, $matches);
+        $video = 'https://www.youtube.com/embed/'.$matches[1];
+	}
 	//merge all the date information into 1 string
 	$date = $year . "-" . $month . "-" . $day;
 		
