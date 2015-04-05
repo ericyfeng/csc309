@@ -139,7 +139,7 @@
 		else
 		{
 			include("template/navbar.php");
-			$ownere = 0;
+			$owner = 0;
 		}
 	?>
 
