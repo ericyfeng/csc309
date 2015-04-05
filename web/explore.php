@@ -26,6 +26,24 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="assets/js/hover_pack.js"></script>
     
+	<script>
+	//performs the filtering of other peoples's projects when you click the red filter by tag button
+	function filtertags(comm_requested)
+	{
+		var blacklist = document.getElementsByClassName("commgeneric");
+		var j;
+		for(j=0; j<blacklist.length; j++)
+		{
+			blacklist[j].style.display = "none";
+		}
+			
+		var fixlist = document.getElementsByClassName(comm_requested);
+		for(j=0; j<fixlist.length; j++)
+		{
+			fixlist[j].style.display = "table-row";
+		}
+	}
+	</script>
 
   </head>
 
@@ -74,14 +92,15 @@
 					<div class="container-fliud pull-right">
 						<ul class="nav">
 							<li>Categories</li>
+								<li> <a onclick="filtertags('commgeneric')"> All</a></li>
 								<?php
 									//for now just pull any project in the backend to display
-									$categories = "select description from community;";
+									$categories = "select * from community;";
 									pg_prepare($dbconn, "cat", $categories);
 									$result = pg_execute($dbconn, "cat", array());
 									while ($row = pg_fetch_row($result)) {
 								?>						
-								<li><a href="#"><?= $row[0] ?></a></li>
+								<li><a onclick="filtertags('<?php echo 'comm'.$row[0]?>')"> <?= $row[1] ?></a></li>
 								<?php
 									}
 								?>								
@@ -130,34 +149,46 @@
 					<div class="row mt">
 					<?php
 						//for now just pull any project in the backend to display
-						$featured = "select projid, goalamount, curramount, startdate, enddate, t1.description, locname, popularity, rating, longdesc, community.description from 
-							(select * from project natural join communityendorsement natural join location order by rating desc limit 6) t1, community where community.commid=t1.commid;";
+						$featured = "select * from project natural join location";
 						pg_prepare($dbconn, "featured", $featured);
 						$result = pg_execute($dbconn, "featured", array());
-						while ($row = pg_fetch_row($result)) {
+						$iteration = 0;
+						$taglist = "taglist"; //also needed for unique variable names
+						while ($row = pg_fetch_assoc($result)) {
+							${$taglist.$iteration} = "select commid from communityendorsement where projid=$1";
+							pg_prepare($dbconn, "taglist".$iteration, ${$taglist.$iteration});
+							$result2 = pg_execute($dbconn, "taglist".$iteration, array($row["projid"]));
+							$tagstring="col-lg-4 col-md-4 col-xs-12 desc ";
+							while($row2 = pg_fetch_row($result2))
+							{//build the list of commid
+								$tagstring = $tagstring . "comm" . $row2[0] . " ";
+							}
+							$iteration++;
+							$tagstring = $tagstring . " commgeneric";
 					?>
 						<?php 
-							$progress = round(($row[2] / $row[1]), 2) * 100;
-							$enddate = new DateTime($row[4]);
+							$progress = round(($row["curramount"] / $row["goalamount"]), 2) * 100;
+							$enddate = new DateTime($row["enddate"]);
 							$today = new DateTime(date("Y-m-d"));
 							$remaining = date_diff($today, $enddate) ;
 						?>
-						<div class="col-lg-4 col-md-4 col-xs-12 desc">
+						<div class="<?= $tagstring ?>">
 							<a class="b-link-fade b-animate-go" href="#"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
-								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row[5] ?></h4>
+								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row["description"] ?></h4>
 								  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>
 								</div>
 							</a>
-							<p><?= $row[5] ?></p>
-							<p class="lead"><?= $row[9] ?></p>
+							<p><?= $row["description"] ?></p>
+							<p class="lead"><?= $row["longdesc"] ?></p>
 							<div class="progress">
 			  					<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
 			    				<?= $progress ?>%
 			 					</div>
-							</div>			
+							</div>
+							
 							<hr-d>
-							<p class="time"><i class="fa fa-tag"></i> <?= $row[10] ?> | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
+							<p class="time"><i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row["locname"] ?></p>
 
 						</div><!-- col-lg-4 -->
 						<?php
