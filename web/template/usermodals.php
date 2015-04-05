@@ -44,14 +44,14 @@
 					<h4>Login</h4>
 				</div>
 				<div class="modal-body">
-					<form action="login.php" method="POST">
+					<form action="../backend/login.php" method="POST">
 						<div class="form-group">
 							<label for="email">Email:</label>
-							<input type="email" class="form-control" name="logemail" placeholder="Please Enter Your Email">
+							<input type="text" class="form-control" name="email" placeholder="Please Enter Your Email">
 						</div>
 						<div class="form-group">
 							<label for="pwd">Password:</label>
-							<input type="password" class="form-control" id="password" placeholder="Please Enter Your Password">
+							<input type="password" class="form-control" name="password" placeholder="Please Enter Your Password">
 						</div>
 						<div class="checkbox">
 							<label><input type="checkbox">Remember Me</label>
@@ -65,7 +65,7 @@
 						<p id="login-status"></p>
 						<div class="modal-footer">
 					      	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					      	<button type="button" class="btn btn-primary" id="signin">Login</button>
+					      	<input type="submit" class="btn btn-primary" value="Log In"></input>
   						</div>
 					</form>
 				</div>

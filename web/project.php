@@ -8,9 +8,8 @@
 		date_default_timezone_set('America/Toronto');  
   		$dbconn = pg_connect("dbname=d8dt3b69jeev6n host=ec2-50-19-249-214.compute-1.amazonaws.com port=5432 user=fhntmyljqrdquf password=vgJO4ZQS8Mi7OceXpIzk_dYL0- sslmode=require");
   		$projid = $_GET["projid"];
-  		$project = "select projid, goalamount, curramount, startdate, enddate, t1.description as title, locname, popularity, rating, longdesc, community.description, fname, lname, reputation from 
-							(select * from project natural join communityendorsement natural join location natural join initiator natural join users where projid=$1) t1, community where community.commid=t1.commid;";
 
+  		$project = "select * from project natural join location";
   		pg_prepare($dbconn, "project", $project);
   		$result = pg_execute($dbconn, "project", array($projid));
   		$row = pg_fetch_array($result);
@@ -54,7 +53,7 @@
 
 		<div class="row">
 			<div class="col-lg-8 col-md-8 col-xs-12">
-				<iframe width="720" height="483" src="https://www.youtube.com/embed/BEtIoGQxqQs" frameborder="0" allowfullscreen></iframe>
+				<iframe width="720" height="483" src="<?= $row['video']?>" frameborder="0" allowfullscreen></iframe>
 			</div>
 			<div class="col-lg-4 col-md-4 col-xs-12">
 				<div class="container-fliud project-info">
@@ -76,7 +75,13 @@
 					<div class="remain-time">
 						<p class="lead"><i class="fa fa-clock-o"></i> <?php echo $remaining->days ?>  Days Left</p>
 					</div>
-					<p class="lead"><i class="fa fa-user"></i> 420 Funders (needs implementation)</p>
+					<?php
+					$funders = "select distinct count(email) from funder where projid=$1";
+					pg_prepare($dbconn, "funders", $funders);
+					$result2 = pg_execute($dbconn, "funders", array($projid));
+					$row2 = pg_fetch_row($result2);
+					?>
+					<p class="lead"><i class="fa fa-user"></i> <?= $row2[0]?> Funders</p>
 					<div class="tags">		
 						<p class="lead"><i class="fa fa-tag"></i> <?php echo $row["description"] ?></p>
 						<p class="lead"><i class="fa fa-map-marker"></i> <?php echo $row["locname"] ?></p>

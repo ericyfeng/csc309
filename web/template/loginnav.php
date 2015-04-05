@@ -21,19 +21,19 @@
                         }
                     ?>                
                     <li>
-                        <a href="explore.php">Explore</a>
+                        <a href="../explore.php">Explore</a>
                     </li>
                     <li>
-                        <a href="newproject.php">New Project</a>
+                        <a href="../newproject.php">New Project</a>
                     </li>
                     <li>
-                        <a href="dashboard.php">Dashboard</a>
+                        <a href="../dashboard.php">Dashboard</a>
                     </li>                    
                     <li>
-                        <a href="profile.php">Profile</a>
+                        <a href="../profile.php">Profile</a>
                     </li>
                     <li>
-                        <a href="logout.php">Log out</a>
+                        <a href="../logout.php">Log out</a>
                     </li>                    
                 </ul>
             </div>
