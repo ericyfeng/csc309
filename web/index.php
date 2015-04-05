@@ -2,11 +2,6 @@
 <html lang="en">
 	<head>
 		<?php 
-			session_start();
-			if(!isset($_SESSION["loggedin"]))
-			{
-				$_SESSION["loggedin"] = 0;
-			}
 			include("template/head.php");
 		?>
 		<title>HOME</title>
@@ -23,13 +18,13 @@
 		if($_SESSION["loggedin"] == 1)
 		{
 			include("template/loginnav.php");
+			//include("template/navbar.php");
 		}
 		else
 		{
 			include("template/navbar.php");
 		}
 	?>
-
 
 
 

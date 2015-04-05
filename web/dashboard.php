@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+	session_start();
 	include("backend/checksession.php");
 		//the session has not expired yet, get the user variables for printing
 	$fname = $_SESSION["fname"];

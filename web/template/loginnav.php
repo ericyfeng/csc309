@@ -10,17 +10,30 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
+                    <?php
+                        if($_SESSION["admin"] == 1) {
+                    ?>
+                    <!--Admin button-->
+                    <li>
+                        <a href="admin2.php?sessid=<?php echo $sessid?>">Administration</a>
+                    </li>
+                    <?php 
+                        }
+                    ?>                
                     <li>
                         <a href="explore.php">Explore</a>
                     </li>
                     <li>
-                        <a href="#" data-toggle="modal">New Project</a>
+                        <a href="newproject.php">New Project</a>
                     </li>
                     <li>
-                        <a href="#" data-toggle="modal">Profile</a>
+                        <a href="dashboard.php">Dashboard</a>
+                    </li>                    
+                    <li>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li>
-                        <a href="#" data-toggle="modal">Log out</a>
+                        <a href="logout.php">Log out</a>
                     </li>                    
                 </ul>
             </div>
