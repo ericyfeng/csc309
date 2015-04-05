@@ -293,13 +293,13 @@
 		<p id="status"></p>
 		<hr>
 
-		<div class="row">
+
 			<h2>MORE ABOUT PROJECT</h2>
 			<p><?php echo $row["longdesc"] ?></p>
-		</div>
+
 
 		<hr>
-		<div class="row">
+
 			<h2>Comments</h2>
 				<label for="newcomment" maxlength="200">Comment on the project:</label>
 				<textarea class="form-control" rows="4" id="newcomment"></textarea>
@@ -319,7 +319,7 @@
 					?>
 
 				</ul>
-		</div>
+
 
 	</div>
 
