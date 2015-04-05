@@ -1,4 +1,4 @@
-<script>
+
 		function validate()
 		{//check to make sure the end date makes sense which means...
 		 //	the end date MUST: come after the current date
@@ -62,4 +62,3 @@
 			//if all the tests pass, the end date is ok
 			return true;
 		}
-		</script>

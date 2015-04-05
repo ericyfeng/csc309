@@ -62,9 +62,6 @@
 	?>
 
 
-
-
-
 		<! ========== PROJECTS ==================================================================================================== 
 		=============================================================================================================================>    
 
@@ -105,10 +102,12 @@
 			  					<div class="progress-bar progress-bar-theme" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
 			    				<?= $progress ?>%
 			 					</div>
-							</div>			
+							</div>	
+
+							<button class="btn btn-danger btn-lg btn-block" onclick="rm(<?php echo $row[0] . ", " . $sessid ;?>)">Delete</button>		
+							
 							<hr-d>
 							<p class="time"><i class="fa fa-tag"></i> <?= $row[10] ?> | <i class="fa fa-calendar"></i> <?= $remaining->days ?> days left | <i class="fa fa-map-marker"></i> <?= $row[6] ?></p>
-
 						</div><!-- col-lg-4 -->
 						<?php
 							}

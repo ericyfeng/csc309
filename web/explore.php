@@ -147,7 +147,7 @@
 							<a class="b-link-fade b-animate-go" href="project.php?projid=<?php echo $row['projid']?>"><img width="350" src="assets/img/portfolio/port04.jpg" alt="" />
 								<div class="b-wrapper">
 								  	<h4 class="b-from-left b-animate b-delay03"> <?= $row["description"] ?></h4>
-								  	<p class="b-from-right b-animate b-delay03">Read More. (please log in first WILL BE CHANGED)</p>
+								  	<p class="b-from-right b-animate b-delay03">Read More.</p>
 								</div>
 							</a>
 							<p><?= $row["description"] ?></p>

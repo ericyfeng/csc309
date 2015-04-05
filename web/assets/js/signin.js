@@ -18,7 +18,7 @@ $(document).ready(function() {
 					$("#login-status").text("login incorrect");
 				} 
 				if (result == 2){
-					window.location.href="dashboard.php";
+					window.location.href="dashboard2.php";
 				}
 			}
 		});
