@@ -120,7 +120,8 @@ CREATE TABLE project
     locid integer NOT NULL,
     popularity integer NOT NULL,
     rating double precision NOT NULL,
-	longdesc character varying(1000)
+	longdesc character varying(1000),
+	video character varying (160)
 );
 CREATE SEQUENCE project_projid_seq
     START WITH 1

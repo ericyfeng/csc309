@@ -101,18 +101,18 @@
 		$summary = "select * from project natural join location where projid=$1";
 		pg_prepare($dbconn, "summary", $summary);
 		$result = pg_execute($dbconn, "summary", array($id));
-		$row = pg_fetch_row($result);
+		$row = pg_fetch_assoc($result);
 
 		//for an esthetic touch, don't display a rating of 0 if nobody has voted yet
-		if($row[8] == 0) 
+		if($row["rating"] == 0) 
 		{
 			$rating="No ratings yet";
 		}
 		else
 		{
-			$rating=$row[8];
+			$rating=$row["rating"];
 		}
-		$longdescription = $row[9];
+		$longdescription = $row["longdesc"];
 	?>
 
 		<!--Black nav bar-->
@@ -188,7 +188,7 @@
 		</div>
 
 		<div class="container">
-			<h3><b><?php echo "$row[6]"?></b></h3>
+			<h3><b><?php echo $row["description"]?></b></h3>
 
 			<!--Project tags-->
 			<ul class="list-inline" id="tags">
@@ -207,27 +207,27 @@
 			<table class="table table-striped table-bordered">
 				<tr>
 					<td><b>Starting Date:</b></td>
-					<td><?php echo "$row[4]"?></td>
+					<td><?php echo $row['startdate']?></td>
 				</tr>
 				<tr>
 					<td><b>End Date:</b></td>
-					<td><?php echo "$row[5]"?></td>
+					<td><?php echo $row['enddate']?></td>
 				</tr>
 				<tr>
 					<td><b>Location:</b></td>
-					<td><?php echo "$row[10]"?></td>
+					<td><?php echo $row['locname']?></td>
 				</tr>
 				<tr>
 					<td><b>Current Fudning:</b></td>
-					<td>$<?php echo "$row[3]"?></span></td>
+					<td>$<?php echo $row['curramount']?></span></td>
 				</tr>
 				<tr>
 					<td><b>Target Fuding:</b></td>
-					<td>$<?php echo "$row[2]"?></td>
+					<td>$<?php echo $row['goalamount']?></td>
 				</tr>
 				<tr>
 					<td><b>Community Rating:</b></td>
-					<td><?php echo "$rating"?></td>
+					<td><?php echo $rating?></td>
 				</tr>
 			</table>
 
